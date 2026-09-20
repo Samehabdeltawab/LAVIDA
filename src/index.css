@@ -1,0 +1,94 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Cairo", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Tajawal", sans-serif;
+
+  --color-primary: #001d2f;
+  --color-primary-container: #00334e;
+  --color-secondary: #775a19;
+  --color-secondary-fixed: #ffdea5;
+  --color-secondary-fixed-dim: #e9c176;
+  --color-on-secondary-fixed: #261900;
+  
+  --color-surface: #fcf9f8;
+  --color-surface-dim: #dcd9d9;
+  --color-surface-bright: #fcf9f8;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f6f3f2;
+  --color-surface-container: #f0eded;
+  --color-surface-container-high: #eae7e7;
+  --color-surface-container-highest: #e5e2e1;
+  --color-surface-variant: #e5e2e1;
+  
+  --color-on-surface: #1c1b1b;
+  --color-on-surface-variant: #42474d;
+  --color-inverse-surface: #313030;
+  --color-inverse-on-surface: #f3f0ef;
+  
+  --color-outline: #72787e;
+  --color-outline-variant: #c2c7ce;
+  --color-whatsapp: #25D366;
+  
+  --shadow-card: 0px 4px 20px rgba(0, 51, 78, 0.05);
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: var(--font-sans);
+  direction: rtl;
+  overflow-x: hidden;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+@keyframes marquee-ltr {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes marquee-rtl {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(50%);
+  }
+}
+
+.animate-marquee-ltr {
+  animation: marquee-ltr 25s linear infinite;
+}
+
+.animate-marquee-rtl {
+  animation: marquee-rtl 25s linear infinite;
+}
+
+.marquee-wrapper:hover .animate-marquee-ltr,
+.marquee-wrapper:hover .animate-marquee-rtl {
+  animation-play-state: paused;
+}
+

@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عقارات سكنية - Lavida Properties</title>
+    <meta name="description" content="تصفح أفضل العقارات السكنية مع Lavida Properties - شقق وفيلات ووحدات سكنية بأفضل الأسعار في مصر.">
+    <meta name="keywords" content="عقارات سكنية, شقق للبيع, فيلات, وحدات سكنية, lavida properties, مصر">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://lavidaproperties.net/residential.html">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://lavidaproperties.net/residential.html">
+    <meta property="og:title" content="عقارات سكنية - Lavida Properties">
+    <meta property="og:description" content="تصفح أفضل العقارات السكنية مع Lavida Properties.">
+    <meta property="og:locale" content="ar_EG">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .page-header {
+            background: linear-gradient(135deg, #2c5f4f 0%, #4a8c7a 100%);
+            padding: 120px 0 60px;
+            margin-top: 70px;
+            text-align: center;
+            color: var(--white);
+        }
+
+        .page-header h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .page-header p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+        }
+
+        .categories-section {
+            padding: 80px 0;
+        }
+
+        .category-card {
+            background: var(--white);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            margin-bottom: 40px;
+            transition: all 0.3s ease;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .category-header {
+            background: linear-gradient(135deg, #FFA500 0%, #FF8C00 100%);
+            padding: 30px;
+            color: var(--white);
+            text-align: center;
+        }
+
+        .category-header h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .category-header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        .category-content {
+            padding: 40px;
+        }
+
+        .properties-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .property-item {
+            background: var(--bg-light);
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .property-item:hover {
+            background: var(--white);
+            border-color: #FFA500;
+            transform: translateY(-3px);
+        }
+
+        .property-item i {
+            font-size: 2.5rem;
+            color: #FFA500;
+            margin-bottom: 15px;
+        }
+
+        .property-item h3 {
+            font-size: 1.3rem;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .property-item p {
+            color: var(--text-light);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin: 40px auto;
+            padding: 15px 40px;
+            background: var(--primary-color);
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .back-button:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(44, 95, 79, 0.3);
+        }
+
+        .back-button i {
+            margin-left: 10px;
+        }
+
+        .button-wrapper {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .real-properties-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .real-property-card {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .real-property-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border-color: #FFA500;
+        }
+
+        .property-badge {
+            background: linear-gradient(135deg, #FFA500 0%, #FF8C00 100%);
+            color: white;
+            padding: 8px 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .property-details {
+            padding: 20px;
+        }
+
+        .property-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .property-info-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .property-info-row i {
+            color: #FFA500;
+            width: 20px;
+        }
+
+        .property-price {
+            background: var(--bg-light);
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 8px;
+            border-right: 4px solid #FFA500;
+        }
+
+        .price-label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 5px;
+        }
+
+        .price-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #2c5f4f;
+        }
+
+        .property-footer {
+            padding: 15px 20px;
+            background: var(--bg-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .contact-btn {
+            background: linear-gradient(135deg, #2c5f4f 0%, #4a8c7a 100%);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .contact-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(44, 95, 79, 0.3);
+        }
+
+        .no-properties {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-light);
+        }
+
+        .no-properties i {
+            font-size: 4rem;
+            color: #e0e0e0;
+            margin-bottom: 20px;
+        }
+
+        .no-properties h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="container">
+                <div class="nav-wrapper">
+                    <ul class="nav-links">
+                        <li><a href="index.html#home">الرئيسية</a></li>
+                        <li><a href="index.html#services">خدماتنا</a></li>
+                        <li><a href="index.html#contact">تواصل معنا</a></li>
+                    </ul>
+                    <div class="logo">
+                        <h1>Lavida Properties</h1>
+                    </div>
+                    <button class="menu-toggle" id="menuToggle">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container">
+            <h1><i class="fas fa-home"></i> الوحدات السكنية</h1>
+            <p>نوفر لك أفضل الخيارات السكنية في أرقى المواقع</p>
+        </div>
+    </div>
+
+    <!-- Categories Section -->
+    <section class="categories-section">
+        <div class="container">
+            
+            <!-- مناطق -->
+            <div class="category-card">
+                <div class="category-header">
+                    <h2><i class="fas fa-map-marked-alt"></i> مناطق</h2>
+                    <p>وحدات سكنية في أفضل المناطق السكنية</p>
+                </div>
+                <div class="category-content">
+                    <!-- Static Examples -->
+                    <div class="properties-grid">
+                        <a href="properties-list.html?type=residential&category=areas&city=الشيخ زايد" class="property-item" style="text-decoration: none; color: inherit; cursor: pointer;">
+                            <i class="fas fa-building"></i>
+                            <h3>الشيخ زايد</h3>
+                            <p>شقق وفيلات فاخرة في قلب الشيخ زايد بمواصفات عالمية</p>
+                        </a>
+                        <a href="properties-list.html?type=residential&category=areas&city=6 أكتوبر" class="property-item" style="text-decoration: none; color: inherit; cursor: pointer;">
+                            <i class="fas fa-city"></i>
+                            <h3>6 أكتوبر</h3>
+                            <p>وحدات سكنية متنوعة في مدينة 6 أكتوبر</p>
+                        </a>
+                        <a href="properties-list.html?type=residential&category=areas&city=القاهرة الجديدة" class="property-item" style="text-decoration: none; color: inherit; cursor: pointer;">
+                            <i class="fas fa-landmark"></i>
+                            <h3>التجمع الخامس</h3>
+                            <p>عقارات راقية في التجمع الخامس بمرافق متكاملة</p>
+                        </a>
+                        <a href="properties-list.html?type=residential&category=areas&city=القاهرة الجديدة" class="property-item" style="text-decoration: none; color: inherit; cursor: pointer;">
+                            <i class="fas fa-home"></i>
+                            <h3>القاهرة الجديدة</h3>
+                            <p>شقق عصرية في أرقى أحياء القاهرة الجديدة</p>
+                        </a>
+                    </div>
+                    
+                    <!-- Real Properties from Admin - Removed, will show only in properties-list.html -->
+                </div>
+            </div>
+
+            <!-- كمبوندات -->
+            <div class="category-card">
+                <div class="category-header">
+                    <h2><i class="fas fa-hotel"></i> كمبوندات</h2>
+                    <p>وحدات سكنية في أفخم الكمبوندات السكنية</p>
+                </div>
+                <div class="category-content">
+                    <!-- Static Examples -->
+                    <div class="properties-grid">
+                        <a href="properties-list.html?type=residential&category=compounds&city=الشيخ زايد" class="property-item" style="text-decoration: none; color: inherit; cursor: pointer;">
+                            <i class="fas fa-swimming-pool"></i>
+                            <h3>كمبوندات الشيخ زايد</h3>
+                            <p>كمبوندات فاخرة بخدمات ومرافق متكاملة</p>
+                        </a>
+                        <a href="properties-list.html?type=residential&category=compounds&city=6 أكتوبر" class="property-item" style="text-decoration: none; color: inherit; cursor: pointer;">
+                            <i class="fas fa-tree"></i>
+                            <h3>كمبوندات أكتوبر</h3>
+                            <p>مجمعات سكنية حديثة بمساحات خضراء واسعة</p>
+                        </a>
+                        <a href="properties-list.html?type=residential&category=compounds&city=القاهرة الجديدة" class="property-item" style="text-decoration: none; color: inherit; cursor: pointer;">
+                            <i class="fas fa-star"></i>
+                            <h3>كمبوندات التجمع</h3>
+                            <p>كمبوندات راقية بأعلى مستويات الأمان والرفاهية</p>
+                        </a>
+                        <a href="properties-list.html?type=residential&category=compounds" class="property-item" style="text-decoration: none; color: inherit; cursor: pointer;">
+                            <i class="fas fa-shield-alt"></i>
+                            <h3>كمبوندات مغلقة</h3>
+                            <p>مجتمعات سكنية آمنة مع حراسة 24 ساعة</p>
+                        </a>
+                    </div>
+                    
+                    <!-- Real Properties from Admin - Removed, will show only in properties-list.html -->
+                </div>
+            </div>
+
+            <!-- الساحل الشمالي -->
+            <div class="category-card">
+                <div class="category-header">
+                    <h2><i class="fas fa-umbrella-beach"></i> الساحل الشمالي</h2>
+                    <p>وحدات سكنية على شاطئ البحر المتوسط</p>
+                </div>
+                <div class="category-content">
+                    <div class="properties-grid">
+                        <div class="property-item">
+                            <i class="fas fa-water"></i>
+                            <h3>شاليهات على البحر</h3>
+                            <p>شاليهات فاخرة بإطلالة مباشرة على البحر</p>
+                        </div>
+                        <div class="property-item">
+                            <i class="fas fa-cocktail"></i>
+                            <h3>فيلات سياحية</h3>
+                            <p>فيلات مستقلة في أرقى قرى الساحل الشمالي</p>
+                        </div>
+                        <div class="property-item">
+                            <i class="fas fa-sun"></i>
+                            <h3>وحدات صيفية</h3>
+                            <p>شقق واستوديوهات للمصايف والإجازات</p>
+                        </div>
+                        <div class="property-item">
+                            <i class="fas fa-anchor"></i>
+                            <h3>منتجعات سكنية</h3>
+                            <p>وحدات داخل منتجعات بخدمات فندقية</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- البحر الأحمر -->
+            <div class="category-card">
+                <div class="category-header">
+                    <h2><i class="fas fa-ship"></i> البحر الأحمر</h2>
+                    <p>عقارات سياحية في الغردقة والجونة وسهل حشيش</p>
+                </div>
+                <div class="category-content">
+                    <div class="properties-grid">
+                        <div class="property-item">
+                            <i class="fas fa-hotel"></i>
+                            <h3>الغردقة</h3>
+                            <p>شقق وفيلات سياحية في قلب الغردقة</p>
+                        </div>
+                        <div class="property-item">
+                            <i class="fas fa-fish"></i>
+                            <h3>الجونة</h3>
+                            <p>وحدات فاخرة في مدينة الجونة السياحية</p>
+                        </div>
+                        <div class="property-item">
+                            <i class="fas fa-palette"></i>
+                            <h3>سهل حشيش</h3>
+                            <p>عقارات راقية في منطقة سهل حشيش</p>
+                        </div>
+                        <div class="property-item">
+                            <i class="fas fa-gem"></i>
+                            <h3>مرسى علم</h3>
+                            <p>وحدات استثمارية في مرسى علم</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Back Button -->
+            <div class="button-wrapper">
+                <a href="index.html#services" class="back-button">
+                    <i class="fas fa-arrow-right"></i>
+                    العودة للصفحة الرئيسية
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>جميع الحقوق محفوظة - Lavida Properties &copy; 2026</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

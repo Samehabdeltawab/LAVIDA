@@ -1,0 +1,6 @@
+﻿{
+  "name": "Lavida Properties",
+  "description": "منصة لاڤيدا بروبيرتز للاستثمار العقاري الفاخر في السوق المصري",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
