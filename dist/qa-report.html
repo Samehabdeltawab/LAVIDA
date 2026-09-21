@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<title>تقرير فحص الجودة (QA) - لافيدا العقارية</title>
+<style>
+  body { font-family: "Segoe UI", Tahoma, Arial, sans-serif; margin: 32px; color: #1a1a1a; line-height: 1.5; }
+  h1 { font-size: 24px; border-bottom: 3px solid #0f3d3e; padding-bottom: 8px; }
+  h2 { font-size: 18px; margin-top: 32px; color: #0f3d3e; border-bottom: 1px solid #ccc; padding-bottom: 4px; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0 24px; font-size: 12px; }
+  th, td { border: 1px solid #ddd; padding: 6px 8px; text-align: right; vertical-align: top; }
+  th { background: #0f3d3e; color: #fff; }
+  tr:nth-child(even) { background: #f7f7f7; }
+  .pass { color: #147a34; font-weight: bold; }
+  .fail { color: #b00020; font-weight: bold; }
+  .na { color: #8a6d00; font-weight: bold; }
+  .sev-high { color: #b00020; font-weight: bold; }
+  .sev-medium { color: #b06a00; font-weight: bold; }
+  .sev-low { color: #555; font-weight: bold; }
+  .sev-info { color: #0a5cad; font-weight: bold; }
+  .summary-box { background: #f0f4f4; border: 1px solid #0f3d3e; border-radius: 6px; padding: 16px; margin-top: 24px; }
+  .meta { color: #555; font-size: 13px; margin-bottom: 24px; }
+  @media print {
+    body { margin: 12mm; }
+    h2 { page-break-after: avoid; }
+    table { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<h1>تقرير فحص الجودة (QA) — موقع لافيدا العقارية</h1>
+<p class="meta">تاريخ الفحص: 18 سبتمبر 2026 | البيئة: Local Dev Server (localhost:3000) + Production Build | النطاق: كامل الموقع بعد تنفيذ مرحلة تحسين SEO والتتبع</p>
+
+<h2>1. الوظائف (Functional)</h2>
+<table>
+<tr><th>#</th><th>المجال</th><th>النتيجة</th><th>الخطورة</th><th>الملاحظة</th><th>الملف/المكوّن</th><th>التوصية</th></tr>
+<tr><td>F1</td><td>تحميل الصفحة الرئيسية</td><td class="pass">PASS</td><td>–</td><td>تُحمَّل جميع الأقسام بدون أخطاء</td><td>App.tsx</td><td>–</td></tr>
+<tr><td>F2</td><td>التنقل عبر الهيدر (ديسكتوب)</td><td class="pass">PASS</td><td>–</td><td>التمرير للأقسام يعمل بشكل صحيح</td><td>Header.tsx</td><td>–</td></tr>
+<tr><td>F3</td><td>قائمة الجوال (Hamburger)</td><td class="pass">PASS</td><td>–</td><td>تُفتح وتُغلق بشكل صحيح</td><td>Header.tsx</td><td>–</td></tr>
+<tr><td>F4</td><td>مسار الشراء (Buyer Intake)</td><td class="pass">PASS</td><td>–</td><td>المعالج من 9 خطوات يعمل، والتحقق من الخطوة الفارغة يمنع التقدم</td><td>BuyerIntake.tsx</td><td>–</td></tr>
+<tr><td>F5</td><td>مسار البيع (Sell Property)</td><td class="pass">PASS</td><td>–</td><td>نفس نمط التحقق المستخدم في نموذج الشراء</td><td>SellPropertyForm.tsx</td><td>–</td></tr>
+<tr><td>F6</td><td>مسار المطورين (Developer)</td><td class="pass">PASS</td><td>–</td><td>نفس نمط التحقق موجود وصحيح</td><td>DeveloperPartnerForm.tsx</td><td>–</td></tr>
+<tr><td>F7</td><td>تصفح المشاريع/العقارات</td><td class="pass">PASS</td><td>–</td><td>الفلاتر الثلاثة تعمل بشكل صحيح</td><td>Projects.tsx</td><td>–</td></tr>
+<tr><td>F8</td><td>تفاصيل العقار</td><td class="pass">PASS</td><td>–</td><td>نافذة التفاصيل تفتح وتعرض الصور والبيانات، وتُسجَّل بحدث التتبع</td><td>UnitsPage.tsx</td><td>–</td></tr>
+<tr><td>F9</td><td>إجراءات التواصل</td><td class="pass">PASS</td><td>–</td><td>الإرسال يعمل ويفتح واتساب برسالة معبأة مسبقاً</td><td>ContactForm.tsx</td><td>–</td></tr>
+<tr><td>F10</td><td>روابط واتساب</td><td class="pass">PASS</td><td>–</td><td>جميع الروابط تشير لنفس الرقم الصحيح</td><td>عدة ملفات</td><td>–</td></tr>
+<tr><td>F11</td><td>تبديل اللغة (عربي/إنجليزي)</td><td class="pass">PASS</td><td>–</td><td>كامل النصوص وخاصيتا dir/lang تتغيران بشكل صحيح</td><td>LangContext.tsx, i18n.ts</td><td>–</td></tr>
+<tr><td>F12</td><td>روابط الفوتر القانونية</td><td class="fail">FAIL</td><td class="sev-medium">متوسطة</td><td>الروابط تشير إلى #privacy وَ #terms وَ #sitemap وهذه الأقسام غير موجودة فعلياً في الصفحة (روابط ميتة)</td><td>Footer.tsx</td><td>إنشاء أقسام حقيقية لهذه الصفحات أو تعطيل/إخفاء الروابط مؤقتاً</td></tr>
+<tr><td>F13</td><td>لغة نافذة دردشة واتساب</td><td class="fail">FAIL</td><td class="sev-medium">متوسطة</td><td>رسائل الترحيب والردود التلقائية بالعربية فقط بشكل ثابت، لا تتبع اللغة المختارة</td><td>WhatsAppButton.tsx</td><td>ربط النصوص بملف i18n.ts عبر t(lang, ...)</td></tr>
+<tr><td>F14</td><td>aria-label لزر واتساب العائم</td><td class="fail">FAIL</td><td class="sev-low">منخفضة</td><td>ثابت بالعربية فقط، لا يترجم في وضع الإنجليزية</td><td>WhatsAppButton.tsx</td><td>استخدام t(lang, "whatsapp_aria_label")</td></tr>
+</table>
+
+<h2>2. التحقق من صحة المدخلات (Validation)</h2>
+<table>
+<tr><th>#</th><th>الاختبار</th><th>النتيجة</th><th>الخطورة</th><th>الملاحظة</th><th>الملف</th><th>التوصية</th></tr>
+<tr><td>V1</td><td>الحقول الإلزامية (خطوة 1 فارغة)</td><td class="pass">PASS</td><td>–</td><td>يمنع التقدم ويظهر رسالة خطأ داخلية</td><td>BuyerIntake.tsx</td><td>–</td></tr>
+<tr><td>V2</td><td>التحقق من صيغة الهاتف</td><td class="pass">PASS</td><td>–</td><td>Regex ^01[0125][0-9]{8}$ مطبق باستمرار في جميع النماذج</td><td>4 ملفات</td><td>–</td></tr>
+<tr><td>V3</td><td>التحقق من صيغة البريد الإلكتروني</td><td class="pass">PASS</td><td>–</td><td>تحقق أساسي لكنه كافٍ وموحّد</td><td>4 ملفات</td><td>–</td></tr>
+<tr><td>V4</td><td>الإرسال الفارغ</td><td class="pass">PASS</td><td>–</td><td>يُمنع قبل استدعاء دالة الحفظ</td><td>جميع النماذج</td><td>–</td></tr>
+<tr><td>V5</td><td>القيم الحدّية (مثال: أقل من الميزانية أكبر من الأقصى)</td><td class="na">لم يُتحقق</td><td class="sev-info">معلومة</td><td>لا يوجد تحقق تقاطعي بين budgetMin وَ budgetMax</td><td>BuyerIntake.tsx</td><td>إضافة تحقق يمنع أن يكون الحد الأدنى أكبر من الحد الأقصى</td></tr>
+<tr><td>V6</td><td>التنقل للأمام/للخلف داخل المعالج</td><td class="pass">PASS</td><td>–</td><td>عدادات الخطوات تعمل بشكل صحيح</td><td>BuyerIntake.tsx</td><td>–</td></tr>
+<tr><td>V7</td><td>سلوك تحديث الصفحة (Refresh)</td><td class="fail">FAIL</td><td class="sev-low">منخفضة</td><td>تحديث الصفحة يعيد اللغة للعربية دائماً (لا يوجد تخزين لتفضيل اللغة)</td><td>LangContext.tsx</td><td>تخزين اللغة المختارة في localStorage وقراءتها عند التحميل</td></tr>
+</table>
+
+<h2>3. التجاوب (Responsive)</h2>
+<table>
+<tr><th>#</th><th>الحجم</th><th>النتيجة</th><th>ملاحظات</th></tr>
+<tr><td>R1</td><td>ديسكتوب (1280+)</td><td class="pass">PASS</td><td>شريط تنقل كامل، تخطيطات الشبكة صحيحة</td></tr>
+<tr><td>R2</td><td>تابلت (768×1024)</td><td class="pass">PASS</td><td>إعادة تدفق العناصر دون تداخل</td></tr>
+<tr><td>R3</td><td>موبايل (375×812)</td><td class="pass">PASS</td><td>قائمة الهامبرغر، الأزرار المكدسة، وزر واتساب العائم كلها بمواقعها الصحيحة</td></tr>
+</table>
+
+<h2>4. اللغة (Language)</h2>
+<table>
+<tr><th>#</th><th>الاختبار</th><th>النتيجة</th><th>الخطورة</th><th>الملاحظة</th></tr>
+<tr><td>L1</td><td>الإنجليزية (LTR)</td><td class="pass">PASS</td><td>–</td><td>dir="ltr" يُطبَّق بشكل صحيح</td></tr>
+<tr><td>L2</td><td>العربية (RTL)</td><td class="pass">PASS</td><td>–</td><td>dir="rtl" يُطبَّق بشكل صحيح (الافتراضي)</td></tr>
+<tr><td>L3</td><td>عنوان الصفحة (title) يعكس اللغة الفعلية</td><td class="fail">FAIL</td><td class="sev-low">منخفضة</td><td>document.title يبقى بالعربية فقط بغض النظر عن اللغة المختارة</td></tr>
+<tr><td>L4</td><td>لغة نافذة دردشة واتساب</td><td class="fail">FAIL</td><td class="sev-medium">متوسطة</td><td>نفس ملاحظة F13 (مكررة للتوثيق)</td></tr>
+</table>
+
+<h2>5. تقني (Technical)</h2>
+<table>
+<tr><th>#</th><th>الاختبار</th><th>النتيجة</th><th>الخطورة</th><th>الملاحظة</th><th>التوصية</th></tr>
+<tr><td>T1</td><td>أخطاء الكونسول عند التحميل</td><td class="fail">FAIL</td><td class="sev-low">منخفضة</td><td>favicon.ico ← 404 Not Found</td><td>إضافة favicon حقيقي في public/</td></tr>
+<tr><td>T2</td><td>مشاكل إتاحة الاستخدام (Accessibility)</td><td class="fail">FAIL</td><td class="sev-low">منخفضة</td><td>"No label associated with a form field" (×3) وَ "missing id/name" (×3) في نموذج التواصل</td><td>إضافة label htmlFor وَ id/name متطابقين لحقول ContactForm.tsx</td></tr>
+<tr><td>T3</td><td>أخطاء الشبكة</td><td class="pass">PASS</td><td>–</td><td>جميع الطلبات الأخرى عادت بنجاح (200/304)</td><td>–</td></tr>
+<tr><td>T4</td><td>أصول/صور مكسورة</td><td class="pass">PASS</td><td>–</td><td>جميع الصور تعمل، ومسار og:image يطابق ملف البناء الفعلي</td><td>–</td></tr>
+<tr><td>T5</td><td>مسارات مكسورة (Routes)</td><td class="na">N/A</td><td>–</td><td>تطبيق صفحة واحدة (SPA) بدون Router، التنقل بالتمرير يعمل بشكل صحيح</td><td>–</td></tr>
+<tr><td>T6</td><td>أخطاء جافاسكريبت</td><td class="pass">PASS</td><td>–</td><td>لم تُلاحظ أي استثناءات غير معالجة</td><td>–</td></tr>
+<tr><td>T7</td><td>أخطاء البناء (Build)</td><td class="pass">PASS</td><td>–</td><td>npm run build ينجح، وَ tsc --noEmit كذلك</td><td>–</td></tr>
+<tr><td>T8</td><td>تحذيرات البناء</td><td class="fail">FAIL</td><td class="sev-low">منخفضة</td><td>حزمة JS الرئيسية 574.83 kB (تتجاوز الحد الموصى به 500 kB)</td><td>تقسيم الكود عبر React.lazy للنوافذ المنبثقة الكبيرة</td></tr>
+</table>
+
+<h2>6. تحسين محركات البحث (SEO)</h2>
+<table>
+<tr><th>#</th><th>الاختبار</th><th>النتيجة</th><th>الخطورة</th><th>الملاحظة</th></tr>
+<tr><td>S1</td><td>عنوان الصفحة (Title)</td><td class="pass">PASS</td><td>–</td><td>وصفي وذو صلة بالكلمات المفتاحية</td></tr>
+<tr><td>S2</td><td>وصف Meta</td><td class="pass">PASS</td><td>–</td><td>موجود وواضح وغير محشو بالكلمات</td></tr>
+<tr><td>S3</td><td>بنية H1/H2</td><td class="pass">PASS</td><td>–</td><td>H1 واحد فقط، وتسلسل H2/H3/H4 متّسق</td></tr>
+<tr><td>S4</td><td>الرابط الأساسي (Canonical)</td><td class="pass">PASS</td><td>–</td><td>موجود ويشير للنطاق الصحيح</td></tr>
+<tr><td>S5</td><td>Open Graph</td><td class="pass">PASS</td><td>–</td><td>جميع الوسوم الأساسية موجودة وصحيحة</td></tr>
+<tr><td>S6</td><td>نص alt للصور</td><td class="pass">PASS</td><td>–</td><td>جميع الصور المهمة تحتوي وصفاً مناسباً</td></tr>
+<tr><td>S7</td><td>العنوان لا يتحدث حسب اللغة النشطة</td><td class="fail">FAIL</td><td class="sev-low">منخفضة</td><td>نفس ملاحظة L3</td></tr>
+<tr><td>S8</td><td>وسوم hreflang</td><td class="na">غير مطبَّق</td><td class="sev-info">معلومة</td><td>غير موجودة لعدم وجود روابط منفصلة لكل لغة (قيد بنيوي مقبول لتطبيق SPA)</td></tr>
+</table>
+
+<h2>7. الأمان (Security)</h2>
+<table>
+<tr><th>#</th><th>الاختبار</th><th>النتيجة</th><th>الخطورة</th><th>الملاحظة</th><th>التوصية</th></tr>
+<tr><td>SEC1</td><td>أسرار مكشوفة في المستودع</td><td class="pass">PASS</td><td>–</td><td>لا يوجد ملف .env مرفوع، وَ .gitignore يستثنيه بشكل صحيح</td><td>–</td></tr>
+<tr><td>SEC2</td><td>متغيرات البيئة في الواجهة الأمامية</td><td class="pass">PASS</td><td>–</td><td>لا توجد متغيرات حساسة داخل حزمة العميل</td><td>–</td></tr>
+<tr><td>SEC3</td><td>آلية مصادقة الأدمن</td><td class="fail">FAIL</td><td class="sev-high">عالية</td><td>كلمة مرور الأدمن تُتحقق عبر هاش SHA-256 ثابت داخل حزمة JS الظاهرة للجميع، عرضة لهجمات القوة الغاشمة دون تقييد محاولات</td><td>نقل التحقق إلى خادم حقيقي/Serverless Function، وعدم الاعتماد على تحقق جهة العميل فقط</td></tr>
+<tr><td>SEC4</td><td>معالجة بيانات النماذج</td><td class="pass">PASS</td><td>–</td><td>لا يوجد خطر حقن، البيانات تُشفَّر عبر encodeURIComponent قبل إرسالها لواتساب</td><td>–</td></tr>
+<tr><td>SEC5</td><td>بيانات اعتماد حساسة مرفوعة</td><td class="pass">PASS</td><td>–</td><td>لم يُعثر على أي مفاتيح API في الكود المصدري</td><td>–</td></tr>
+</table>
+
+<h2>8. الأداء (Performance)</h2>
+<table>
+<tr><th>#</th><th>الاختبار</th><th>النتيجة</th><th>الخطورة</th><th>الملاحظة</th><th>التوصية</th></tr>
+<tr><td>P1</td><td>أصول كبيرة الحجم</td><td class="fail">FAIL</td><td class="sev-medium">متوسطة</td><td>صورة المؤسس CEO.png تصل إلى 1.78 ميجابايت وهي أيضاً صورة og:image المستخدمة في مشاركات السوشيال ميديا</td><td>ضغط الصورة إلى WebP/AVIF بحجم أقل من 200KB، واستخدام صورة مخصصة أصغر لـ og:image (المقاس المثالي 1200×630)</td></tr>
+<tr><td>P2</td><td>طلبات غير ضرورية</td><td class="pass">PASS</td><td>–</td><td>لا توجد طلبات مكررة أو زائدة</td><td>–</td></tr>
+<tr><td>P3</td><td>موارد حاجبة للعرض (Blocking)</td><td class="fail">FAIL</td><td class="sev-low">منخفضة</td><td>خطوط Google Fonts تُحمَّل بطريقة قد تحجب العرض، لم يتأكد وجود font-display: swap</td><td>التأكد من font-display: swap، أو استضافة الخطوط ذاتياً، أو إضافة preconnect</td></tr>
+<tr><td>P4</td><td>حزمة JS واحدة كبيرة</td><td class="fail">FAIL</td><td class="sev-low">منخفضة</td><td>574.83 kB بدون تقسيم كود (مكرر مع T8)</td><td>تقسيم الكود عبر React.lazy()</td></tr>
+<tr><td>P5</td><td>صورة الخلفية الرئيسية (Hero)</td><td class="na">PASS (حدّي)</td><td class="sev-info">معلومة</td><td>مستضافة خارجياً عبر googleusercontent.com بدلاً من الاستضافة الذاتية</td><td>النظر في استضافة صور Hero/المشاريع محلياً</td></tr>
+</table>
+
+<div class="summary-box">
+  <h2 style="margin-top:0;">ملخص النتائج</h2>
+  <p><span class="sev-high">عالية:</span> 1 (SEC3 — تحقق كلمة مرور الأدمن من جهة العميل)</p>
+  <p><span class="sev-medium">متوسطة:</span> 4 (F12 روابط فوتر ميتة، F13/L4 نافذة واتساب غير مترجمة، P1 صورة كبيرة الحجم)</p>
+  <p><span class="sev-low">منخفضة:</span> 8 (favicon 404، تحذيرات إتاحة الاستخدام، العنوان الثابت، فقدان اللغة عند التحديث، حجم الحزمة، تحميل الخطوط، استضافة صورة Hero خارجياً)</p>
+  <p><span class="sev-info">معلومة/غير مطبَّق (مقبول ضمن قيود SPA):</span> 2 (تحقق القيم الحدّية المتقاطعة، وسوم hreflang)</p>
+  <p style="margin-top:16px; font-size:12px; color:#666;">لم يتم إجراء أي تعديل على الكود ضمن هذا الفحص — هذا تقرير نتائج فقط بحسب الطلب.</p>
+</div>
+
+</body>
+</html>
