@@ -262,6 +262,10 @@ export default function BuyerIntake({ isOpen, onClose }: BuyerIntakeProps) {
       return;
     }
 
+    // Open the tab synchronously (within the user click gesture) so the
+    // browser popup blocker doesn't block it after the async save below.
+    const waWindow = window.open("", "_blank");
+
     // Final step validated — persist the requirement
     const requirement: Omit<BuyerRequirement, "id" | "date" | "status"> = {
       purpose: purpose as BuyerPurpose,
@@ -301,7 +305,12 @@ export default function BuyerIntake({ isOpen, onClose }: BuyerIntakeProps) {
       `${t(lang, "intake_summary_budget")}: ${requirement.budgetMin} - ${requirement.budgetMax}`,
     ];
     const notifyText = encodeURIComponent(notifyParts.join("\n"));
-    window.open(`https://wa.me/${WA_NUMBER}?text=${notifyText}`, "_blank");
+    const notifyUrl = `https://wa.me/${WA_NUMBER}?text=${notifyText}`;
+    if (waWindow) {
+      waWindow.location.href = notifyUrl;
+    } else {
+      window.open(notifyUrl, "_blank");
+    }
   };
 
   const handleBack = () => {

@@ -258,6 +258,10 @@ export default function SellPropertyForm({ isOpen, onClose }: SellPropertyFormPr
     e.preventDefault();
     if (!validate()) return;
 
+    // Open the tab synchronously (within the user click gesture) so the
+    // browser popup blocker doesn't block it after the async save below.
+    const waWindow = window.open("", "_blank");
+
     const submission: Omit<SellPropertySubmission, "id" | "date" | "status"> = {
       governorate: governorate.trim(),
       district: district.trim() || undefined,
@@ -299,7 +303,12 @@ export default function SellPropertyForm({ isOpen, onClose }: SellPropertyFormPr
       `${t(lang, "contact_wa_phone")}: ${submission.phone}`,
     ];
     const notifyText = encodeURIComponent(notifyParts.join("\n"));
-    window.open(`https://wa.me/${WA_NUMBER}?text=${notifyText}`, "_blank");
+    const notifyUrl = `https://wa.me/${WA_NUMBER}?text=${notifyText}`;
+    if (waWindow) {
+      waWindow.location.href = notifyUrl;
+    } else {
+      window.open(notifyUrl, "_blank");
+    }
   };
 
   const handleTalkToAdvisor = () => {
