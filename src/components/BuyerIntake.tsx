@@ -291,6 +291,17 @@ export default function BuyerIntake({ isOpen, onClose }: BuyerIntakeProps) {
       status: "new",
     });
     setSubmitted(true);
+
+    // Auto-notify via WhatsApp on new submission
+    const notifyParts = [
+      lang === "ar" ? "طلب شراء جديد" : "New Buyer Request",
+      ``,
+      `${t(lang, "contact_wa_name")}: ${requirement.fullName}`,
+      `${t(lang, "contact_wa_phone")}: ${requirement.phone}`,
+      `${t(lang, "intake_summary_budget")}: ${requirement.budgetMin} - ${requirement.budgetMax}`,
+    ];
+    const notifyText = encodeURIComponent(notifyParts.join("\n"));
+    window.open(`https://wa.me/${WA_NUMBER}?text=${notifyText}`, "_blank");
   };
 
   const handleBack = () => {

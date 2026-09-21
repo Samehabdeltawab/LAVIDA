@@ -6,7 +6,7 @@ import {
   BarChart3, LogOut, AlertCircle, ImageIcon, Film, Loader2, CheckCircle2,
   XCircle, RefreshCw, Building2, Phone, ClipboardList, Layers,
 } from "lucide-react";
-import { PropertyUnit, SellPropertySubmission, DeveloperLead, FinishingStatus, SellPropertyType } from "../types";
+import { PropertyUnit, SellPropertySubmission, DeveloperLead, BuyerRequirement, FinishingStatus, SellPropertyType } from "../types";
 import { storeBlob, getBlobUrl, removeBlob, compressImage } from "../utils/mediaDB";
 import {
   getSellPropertySubmissions,
@@ -18,6 +18,11 @@ import {
   updateDeveloperLeadStatus,
   deleteDeveloperLead,
 } from "../utils/developerLeads";
+import {
+  getBuyerRequirements,
+  updateBuyerRequirementStatus,
+  deleteBuyerRequirement,
+} from "../utils/buyerRequirements";
 import { useLang } from "../LangContext";
 
 interface UnitsManagerProps {
@@ -181,6 +186,14 @@ const REQ_BUSINESS_NEED_DISPLAY: Record<string, { ar: string; en: string }> = {
   other: { ar: "أخرى", en: "Other" },
 };
 
+const REQ_PURPOSE_DISPLAY: Record<string, { ar: string; en: string }> = {
+  residential: { ar: "سكني", en: "Residential" },
+  commercial: { ar: "تجاري", en: "Commercial" },
+  administrative: { ar: "إداري", en: "Administrative" },
+  medical: { ar: "طبي", en: "Medical" },
+  coastal: { ar: "ساحلي", en: "Coastal" },
+};
+
 
 const REQ_STATUS_LABELS_SELL: Record<SellPropertySubmission["status"], string> = {
   new: "جديد",
@@ -198,12 +211,21 @@ const REQ_STATUS_LABELS_DEV: Record<DeveloperLead["status"], string> = {
   rejected: "مرفوض",
 };
 
+const REQ_STATUS_LABELS_BUYER: Record<BuyerRequirement["status"], string> = {
+  new: "جديد",
+  matched: "تمت الموافقة والمطابقة",
+  contacted: "تم التواصل",
+  closed: "مغلق",
+};
+
 const REQ_STATUS_COLORS: Record<string, string> = {
   new: "bg-blue-100 text-blue-700",
   reviewing: "bg-amber-100 text-amber-700",
   contacted: "bg-purple-100 text-purple-700",
   listed: "bg-green-100 text-green-700",
   partnered: "bg-green-100 text-green-700",
+  matched: "bg-green-100 text-green-700",
+  closed: "bg-gray-200 text-gray-600",
   rejected: "bg-red-100 text-red-700",
 };
 
@@ -328,13 +350,15 @@ export default function UnitsManager({ isOpen, onClose }: UnitsManagerProps) {
 
   // ── Main screen tabs: Units vs. Requests (approvals) ─────────────────────
   const [mainTab, setMainTab] = useState<"units" | "requests">("units");
-  const [reqTab, setReqTab] = useState<"sell" | "developer">("sell");
+  const [reqTab, setReqTab] = useState<"sell" | "developer" | "buyer">("sell");
   const [sellItems, setSellItems] = useState<SellPropertySubmission[]>([]);
   const [devItems, setDevItems] = useState<DeveloperLead[]>([]);
+  const [buyerItems, setBuyerItems] = useState<BuyerRequirement[]>([]);
   const [reqLoading, setReqLoading] = useState(false);
   const [viewDetails, setViewDetails] = useState<
     | { kind: "sell"; data: SellPropertySubmission }
     | { kind: "developer"; data: DeveloperLead }
+    | { kind: "buyer"; data: BuyerRequirement }
     | null
   >(null);
   // Fallback logo uploads for developer requests submitted before the logo field was mandatory
@@ -350,9 +374,14 @@ export default function UnitsManager({ isOpen, onClose }: UnitsManagerProps) {
 
   const refreshRequests = useCallback(async () => {
     setReqLoading(true);
-    const [sells, devs] = await Promise.all([getSellPropertySubmissions(), getDeveloperLeads()]);
+    const [sells, devs, buyers] = await Promise.all([
+      getSellPropertySubmissions(),
+      getDeveloperLeads(),
+      getBuyerRequirements(),
+    ]);
     setSellItems(sells);
     setDevItems(devs);
+    setBuyerItems(buyers);
     setReqLoading(false);
   }, []);
 
@@ -362,7 +391,8 @@ export default function UnitsManager({ isOpen, onClose }: UnitsManagerProps) {
 
   const pendingRequestsCount =
     sellItems.filter(s => s.status === "new" || s.status === "reviewing").length +
-    devItems.filter(d => d.status === "new" || d.status === "reviewing").length;
+    devItems.filter(d => d.status === "new" || d.status === "reviewing").length +
+    buyerItems.filter(b => b.status === "new").length;
 
   const handleApproveSell = async (sub: SellPropertySubmission) => {
     if (!window.confirm(L("سيتم نشر هذا العقار على الموقع مباشرة. هل تريد المتابعة؟", "This property will be published live. Continue?"))) return;
@@ -433,6 +463,23 @@ export default function UnitsManager({ isOpen, onClose }: UnitsManagerProps) {
   const handleDeleteDevReq = async (id: string) => {
     if (!window.confirm(L("هل أنت متأكد من حذف هذا الطلب نهائيًا؟", "Delete this request permanently?"))) return;
     await deleteDeveloperLead(id);
+    refreshRequests();
+  };
+
+  const handleApproveBuyer = async (id: string) => {
+    if (!window.confirm(L("سيتم اعتماد هذا الطلب وتمييزه كمُطابَق. هل تريد المتابعة؟", "This request will be approved and marked as matched. Continue?"))) return;
+    await updateBuyerRequirementStatus(id, "matched");
+    refreshRequests();
+  };
+
+  const handleCloseBuyer = async (id: string) => {
+    await updateBuyerRequirementStatus(id, "closed");
+    refreshRequests();
+  };
+
+  const handleDeleteBuyerReq = async (id: string) => {
+    if (!window.confirm(L("هل أنت متأكد من حذف هذا الطلب نهائيًا؟", "Delete this request permanently?"))) return;
+    await deleteBuyerRequirement(id);
     refreshRequests();
   };
 
@@ -933,6 +980,15 @@ export default function UnitsManager({ isOpen, onClose }: UnitsManagerProps) {
                 <Building2 className="h-4 w-4" />
                 {L("طلبات المطورين","Developer Requests")} ({devItems.filter((d) => d.status === "new" || d.status === "reviewing").length})
               </button>
+              <button
+                onClick={() => setReqTab("buyer")}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-sans font-semibold transition-colors ${
+                  reqTab === "buyer" ? "bg-primary text-white" : "bg-gray-50 text-gray-600 border border-gray-200"
+                }`}
+              >
+                <ClipboardList className="h-4 w-4" />
+                {L("طلبات الشراء","Buyer Requests")} ({buyerItems.filter((b) => b.status === "new").length})
+              </button>
             </div>
 
             <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
@@ -1073,6 +1129,61 @@ export default function UnitsManager({ isOpen, onClose }: UnitsManagerProps) {
                         )}
                         <button
                           onClick={() => handleDeleteDevReq(dev.id)}
+                          className="flex items-center gap-1.5 text-gray-400 hover:text-red-600 text-xs font-bold px-3 py-2 rounded-lg transition-colors ms-auto"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" /> {L("حذف","Delete")}
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )
+              )}
+
+              {reqTab === "buyer" && (
+                buyerItems.length === 0 ? (
+                  <p className="text-center text-gray-400 py-16">{L("لا توجد طلبات شراء حتى الآن","No buyer requests yet")}</p>
+                ) : (
+                  buyerItems.map((req) => (
+                    <div key={req.id} className="bg-white border border-gray-200 rounded-xl p-4 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full ${REQ_STATUS_COLORS[req.status]}`}>
+                          {REQ_STATUS_LABELS_BUYER[req.status]}
+                        </span>
+                        <span className="text-xs text-gray-400">{new Date(req.date).toLocaleDateString(lang === "ar" ? "ar-EG" : "en-US")}</span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
+                        <div><b>{L("الاسم","Name")}:</b> {req.fullName}</div>
+                        <div className="flex items-center gap-1"><Phone className="h-3.5 w-3.5" /> {req.phone}</div>
+                        <div><b>{L("الغرض","Purpose")}:</b> {REQ_PURPOSE_DISPLAY[req.purpose]?.[lang] ?? req.purpose}</div>
+                        <div><b>{L("نوع العقار","Property Type")}:</b> {REQ_PROPERTY_TYPE_DISPLAY[req.propertyType]?.[lang] ?? req.propertyType}</div>
+                        <div><b>{L("الميزانية","Budget")}:</b> {req.budgetMin} - {req.budgetMax} {L("ج.م","EGP")}</div>
+                        <div><b>{L("المواقع المطلوبة","Locations")}:</b> {req.locations.join("، ")}</div>
+                      </div>
+                      <div className="flex gap-2 pt-2 border-t border-gray-100">
+                        <button
+                          onClick={() => setViewDetails({ kind: "buyer", data: req })}
+                          className="flex items-center gap-1.5 bg-primary/10 hover:bg-primary/20 text-primary text-xs font-bold px-3 py-2 rounded-lg transition-colors"
+                        >
+                          {L("عرض كل التفاصيل","View Full Details")}
+                        </button>
+                        {req.status === "new" && (
+                          <button
+                            onClick={() => handleApproveBuyer(req.id)}
+                            className="flex items-center gap-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold px-3 py-2 rounded-lg transition-colors"
+                          >
+                            <CheckCircle2 className="h-3.5 w-3.5" /> {L("اعتماد الطلب","Approve Request")}
+                          </button>
+                        )}
+                        {(req.status === "new" || req.status === "matched" || req.status === "contacted") && (
+                          <button
+                            onClick={() => handleCloseBuyer(req.id)}
+                            className="flex items-center gap-1.5 bg-gray-100 hover:bg-gray-200 text-gray-600 text-xs font-bold px-3 py-2 rounded-lg transition-colors"
+                          >
+                            <XCircle className="h-3.5 w-3.5" /> {L("إغلاق الطلب","Close Request")}
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleDeleteBuyerReq(req.id)}
                           className="flex items-center gap-1.5 text-gray-400 hover:text-red-600 text-xs font-bold px-3 py-2 rounded-lg transition-colors ms-auto"
                         >
                           <Trash2 className="h-3.5 w-3.5" /> {L("حذف","Delete")}
@@ -1484,7 +1595,11 @@ export default function UnitsManager({ isOpen, onClose }: UnitsManagerProps) {
             >
               <div className="bg-primary text-white p-5 rounded-t-2xl flex justify-between items-center sticky top-0 z-10">
                 <h3 className="font-display text-lg font-bold">
-                  {viewDetails.kind === "sell" ? L("تفاصيل طلب البيع","Sell Request Details") : L("تفاصيل طلب المطور","Developer Request Details")}
+                  {viewDetails.kind === "sell"
+                    ? L("تفاصيل طلب البيع","Sell Request Details")
+                    : viewDetails.kind === "developer"
+                    ? L("تفاصيل طلب المطور","Developer Request Details")
+                    : L("تفاصيل طلب الشراء","Buyer Request Details")}
                 </h3>
                 <button onClick={() => setViewDetails(null)} className="text-white/70 hover:text-white p-1 rounded-lg">
                   <X className="h-5 w-5" />
@@ -1529,7 +1644,7 @@ export default function UnitsManager({ isOpen, onClose }: UnitsManagerProps) {
                       </div>
                     )}
                   </>
-                ) : (
+                ) : viewDetails.kind === "developer" ? (
                   <>
                     {(viewDetails.data.companyLogo || manualDevLogos[viewDetails.data.id]) && (
                       <div className="flex justify-center">
@@ -1572,6 +1687,29 @@ export default function UnitsManager({ isOpen, onClose }: UnitsManagerProps) {
                         <p className="text-gray-600 mt-1">{viewDetails.data.otherNeedDetails}</p>
                       </div>
                     )}
+                  </>
+                ) : (
+                  <>
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+                      <div><b>{L("الاسم","Name")}:</b> {viewDetails.data.fullName}</div>
+                      <div><b>{L("الهاتف","Phone")}:</b> {viewDetails.data.phone}</div>
+                      <div><b>{L("البريد الإلكتروني","Email")}:</b> {viewDetails.data.email}</div>
+                      <div><b>{L("طريقة التواصل","Contact Method")}:</b> {viewDetails.data.contactMethod}</div>
+                      <div><b>{L("الغرض","Purpose")}:</b> {REQ_PURPOSE_DISPLAY[viewDetails.data.purpose]?.[lang] ?? viewDetails.data.purpose}</div>
+                      <div><b>{L("نوع العقار","Property Type")}:</b> {REQ_PROPERTY_TYPE_DISPLAY[viewDetails.data.propertyType]?.[lang] ?? viewDetails.data.propertyType}</div>
+                      <div><b>{L("الميزانية","Budget")}:</b> {viewDetails.data.budgetMin} - {viewDetails.data.budgetMax} {L("ج.م","EGP")}</div>
+                      {viewDetails.data.downPayment && <div><b>{L("المقدم","Down Payment")}:</b> {viewDetails.data.downPayment}</div>}
+                      {viewDetails.data.monthlyPayment && <div><b>{L("القسط الشهري","Monthly Payment")}:</b> {viewDetails.data.monthlyPayment}</div>}
+                      <div><b>{L("موعد التسليم","Delivery Timeline")}:</b> {REQ_DELIVERY_TIMELINE_DISPLAY[viewDetails.data.delivery]?.[lang] ?? viewDetails.data.delivery}</div>
+                      {viewDetails.data.bedrooms && <div><b>{L("غرف النوم","Bedrooms")}:</b> {viewDetails.data.bedrooms}</div>}
+                      {viewDetails.data.bathrooms && <div><b>{L("الحمامات","Bathrooms")}:</b> {viewDetails.data.bathrooms}</div>}
+                      {viewDetails.data.area && <div><b>{L("المساحة","Area")}:</b> {viewDetails.data.area} {L("م²","m²")}</div>}
+                      {viewDetails.data.furnishing && <div><b>{L("الفرش","Furnishing")}:</b> {REQ_FURNISHED_DISPLAY[viewDetails.data.furnishing]?.[lang] ?? viewDetails.data.furnishing}</div>}
+                    </div>
+                    <div>
+                      <b>{L("المواقع المطلوبة","Requested Locations")}:</b>{" "}
+                      {viewDetails.data.locations.join("، ")}
+                    </div>
                   </>
                 )}
               </div>

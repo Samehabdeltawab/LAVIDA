@@ -287,6 +287,19 @@ export default function SellPropertyForm({ isOpen, onClose }: SellPropertyFormPr
     await saveSellPropertySubmission(submission);
     trackSellerFormCompleted({ propertyType: submission.propertyType, governorate: submission.governorate });
     setSubmitted(true);
+
+    // Auto-notify via WhatsApp on new submission
+    const notifyParts = [
+      lang === "ar" ? "طلب بيع عقار جديد" : "New Sell Property Request",
+      ``,
+      `${t(lang, "sell_form_governorate_label")}: ${submission.governorate}`,
+      `${t(lang, "sell_form_compound_label")}: ${submission.compound}`,
+      `${t(lang, "sell_form_asking_price_label")}: ${submission.askingPrice}`,
+      `${t(lang, "contact_wa_name")}: ${submission.fullName}`,
+      `${t(lang, "contact_wa_phone")}: ${submission.phone}`,
+    ];
+    const notifyText = encodeURIComponent(notifyParts.join("\n"));
+    window.open(`https://wa.me/${WA_NUMBER}?text=${notifyText}`, "_blank");
   };
 
   const handleTalkToAdvisor = () => {

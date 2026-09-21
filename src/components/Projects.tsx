@@ -12,12 +12,21 @@ interface Props {
 export default function Projects({ onNavigate }: Props) {
   const { lang } = useLang();
   const [unitsCount, setUnitsCount] = useState(0);
+  const [typeCounts, setTypeCounts] = useState<Record<string, number>>({});
 
   // Read units count from localStorage
   useEffect(() => {
     try {
       const saved = localStorage.getItem("lavida_units_list");
-      if (saved) setUnitsCount(JSON.parse(saved).length);
+      if (saved) {
+        const list: { type?: string }[] = JSON.parse(saved);
+        setUnitsCount(list.length);
+        const counts: Record<string, number> = {};
+        list.forEach((u) => {
+          if (u.type) counts[u.type] = (counts[u.type] || 0) + 1;
+        });
+        setTypeCounts(counts);
+      }
     } catch { /* ignore */ }
   }, []);
 
@@ -65,10 +74,12 @@ export default function Projects({ onNavigate }: Props) {
   };
 
   const tabs = [
-    { type: "All",                                      label: t(lang, "projects_all") },
-    { type: "سكني",            label: t(lang, "projects_residential") },
-    { type: "تجاري",    label: t(lang, "projects_commercial") },
-    { type: "ساحلي",    label: t(lang, "projects_coastal") },
+    { type: "All",       label: t(lang, "projects_all") },
+    { type: "سكني",      label: t(lang, "projects_residential") },
+    { type: "تجاري",     label: t(lang, "projects_commercial") },
+    { type: "إداري",     label: lang === "ar" ? "إداري" : "Administrative" },
+    { type: "طبي",       label: lang === "ar" ? "طبي" : "Medical" },
+    { type: "ساحلي",     label: t(lang, "projects_coastal") },
   ];
 
   return (
@@ -87,15 +98,32 @@ export default function Projects({ onNavigate }: Props) {
 
         {/* Category quick-nav tabs */}
         <div className={`flex flex-row flex-wrap gap-3 mb-10 border-b border-outline-variant/30 pb-4 ${lang === "ar" ? "justify-end" : "justify-start"}`}>
-          {tabs.map(tab => (
-            <button
-              key={tab.type}
-              onClick={() => onNavigate(tab.type)}
-              className="font-display text-sm font-semibold px-5 py-2.5 rounded-lg bg-surface-container-low text-on-surface-variant hover:bg-primary hover:text-white transition-all duration-300 cursor-pointer"
-            >
-              {tab.label}
-            </button>
-          ))}
+          {tabs.map(tab => {
+            const count = tab.type === "All" ? unitsCount : (typeCounts[tab.type] || 0);
+            const isActive = tab.type === "All" || count > 0;
+            return (
+              <button
+                key={tab.type}
+                onClick={() => onNavigate(tab.type)}
+                className={`relative font-display text-sm font-semibold px-5 py-2.5 rounded-lg transition-all duration-300 cursor-pointer flex items-center gap-2 ${
+                  isActive
+                    ? "bg-surface-container-low text-on-surface-variant hover:bg-primary hover:text-white"
+                    : "bg-surface-container-low/50 text-on-surface-variant/40 hover:bg-primary/70 hover:text-white"
+                }`}
+              >
+                {tab.label}
+                {tab.type !== "All" && (
+                  <span
+                    className={`inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1 rounded-full text-[11px] font-bold ${
+                      isActive ? "bg-secondary text-white" : "bg-outline-variant/40 text-on-surface-variant/60"
+                    }`}
+                  >
+                    {count}
+                  </span>
+                )}
+              </button>
+            );
+          })}
         </div>
 
         {/* Projects Grid */}

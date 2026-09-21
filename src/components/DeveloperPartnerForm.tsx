@@ -8,6 +8,8 @@ import { t, TranslationKey } from "../i18n";
 import { saveDeveloperLead, uploadBrochureFile, removeBrochureFile, uploadCompanyLogo, removeCompanyLogo } from "../utils/developerLeads";
 import { trackDeveloperFormStarted, trackDeveloperFormCompleted } from "../utils/analytics";
 
+const WA_NUMBER = "201003306688";
+
 interface DeveloperPartnerFormProps {
   isOpen: boolean;
   onClose: () => void;
@@ -244,6 +246,19 @@ export default function DeveloperPartnerForm({ isOpen, onClose }: DeveloperPartn
     await saveDeveloperLead(lead);
     trackDeveloperFormCompleted({ projectName: lead.projectName, companyName: lead.companyName });
     setSubmitted(true);
+
+    // Auto-notify via WhatsApp on new submission
+    const notifyParts = [
+      lang === "ar" ? "طلب شراكة مطور جديد" : "New Developer Partner Request",
+      ``,
+      `${lang === "ar" ? "الشركة" : "Company"}: ${lead.companyName}`,
+      `${lang === "ar" ? "المشروع" : "Project"}: ${lead.projectName}`,
+      `${lang === "ar" ? "الموقع" : "Location"}: ${lead.location}`,
+      `${t(lang, "contact_wa_name")}: ${lead.contactPerson}`,
+      `${t(lang, "contact_wa_phone")}: ${lead.phone}`,
+    ];
+    const notifyText = encodeURIComponent(notifyParts.join("\n"));
+    window.open(`https://wa.me/${WA_NUMBER}?text=${notifyText}`, "_blank");
   };
 
   if (!isOpen) return null;
