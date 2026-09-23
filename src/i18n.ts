@@ -17,8 +17,8 @@ const translations = {
     hero_desc: "أخبرنا باحتياجاتك، وسيساعدك فريق لافيدا في إيجاد العقارات التي تناسب ميزانيتك وموقعك وخطة السداد وأهدافك.",
     hero_cta1: "احجز استشارتك المجانية",
     hero_cta2: "تصفح مشاريعنا",
-    hero_cta_buy: "أريد الشراء",
-    hero_cta_sell: "أريد البيع",
+    hero_cta_buy: "شراء",
+    hero_cta_sell: "بيع وحدتك",
     hero_cta_developer: "أنا مطوّر",
 
     // About
@@ -58,7 +58,7 @@ const translations = {
 
     // Projects
     projects_tag: "مشاريعنا",
-    projects_title: "مشاريعنا",
+    projects_title: "المشاريع",
     projects_subtitle: "تصفح مجموعتنا الحصرية من العقارات الاستثنائية والفريدة في أرقى المواقع الجغرافية بمصر",
     projects_all: "الكل",
     projects_residential: "سكني وفندقي",
@@ -69,7 +69,7 @@ const translations = {
     projects_close: "إغلاق",
     project1_title: "سكني - فندقي",
     project1_desc: "وحدات سكنية وفندقية فاخرة في أرقى أحياء القاهرة والمدن الجديدة.",
-    project1_category: "سكني",
+    project1_category: "سكني وفندقي",
     project1_location: "القاهرة الجديدة & العاصمة الإدارية",
     project1_price: "4,500,000 ج.م",
     project1_detail1: "شقق فندقية متميزة وبنتهاوس بتشطيبات وتصميمات أوروبية بالكامل.",
@@ -83,7 +83,7 @@ const translations = {
     project1_feature5: "مصاعد بانورامية ذكية",
     project2_title: "تجاري - إداري - طبي",
     project2_desc: "مكاتب ومراكز تجارية وطبية مجهزة بأحدث الوسائل التكنولوجية والإنشائية.",
-    project2_category: "تجاري",
+    project2_category: "تجاري وإداري وطبي",
     project2_location: "غرب القاهرة (أكتوبر والشيخ زايد)",
     project2_price: "6,200,000 ج.م",
     project2_detail1: "واجهات زجاجية مزدوجة معزولة عاكسة للصوت والحرارة.",

@@ -163,13 +163,14 @@ export default function App() {
       />
 
       {/* 3. Why Lavida — value proposition */}
-      <WhyUs />
+      {/* Temporarily hidden - remove this comment wrapper to re-enable */}
+      {/* <WhyUs /> */}
+
+      {/* 3. About Corporate Section - now merged into Hero (single-page view), kept here for easy revert */}
+      {/* <About /> */}
 
       {/* 4. Featured Properties */}
       <Projects onNavigate={handleNavigate} />
-
-      {/* 3. About Corporate Section with counter metrics */}
-      <About />
 
       {/* 5. Complete Services Modular Interactive Block */}
       {/* Temporarily hidden - remove this comment wrapper to re-enable */}

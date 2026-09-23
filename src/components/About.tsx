@@ -1,14 +1,24 @@
-import { motion } from "motion/react";
+import { useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import { useLang } from "../LangContext";
 import { t } from "../i18n";
 
 export default function About() {
   const { lang } = useLang();
+  const [showFullDesc, setShowFullDesc] = useState(false);
 
   const stats = [
     { value: t(lang, "about_stat1_value"), label: t(lang, "about_stat1_label") },
     { value: t(lang, "about_stat2_value"), label: t(lang, "about_stat2_label") },
   ];
+
+  // Split the first description sentence: everything before the final phrase
+  // stays visible, and the last phrase reveals the second paragraph on hover.
+  const desc1Full = t(lang, "about_desc1");
+  const lastPhrase = lang === "ar" ? "بناء للمجتمعات" : "building of communities";
+  const splitIdx = desc1Full.lastIndexOf(lastPhrase);
+  const desc1Before = splitIdx >= 0 ? desc1Full.slice(0, splitIdx) : desc1Full;
+  const desc1After = splitIdx >= 0 ? desc1Full.slice(splitIdx) : "";
 
   return (
     <section id="about" className="py-20 bg-surface relative overflow-hidden">
@@ -55,10 +65,29 @@ export default function About() {
             
             <div className="space-y-4 font-sans text-on-surface-variant leading-relaxed">
               <p className="text-lg text-on-surface">
-                {t(lang, "about_desc1")}
-              </p>
-              <p className="text-base text-on-surface-variant">
-                {t(lang, "about_desc2")}
+                {desc1Before}
+                <span
+                  className="relative inline-block cursor-help border-b border-dotted border-secondary text-secondary font-semibold"
+                  onMouseEnter={() => setShowFullDesc(true)}
+                  onMouseLeave={() => setShowFullDesc(false)}
+                >
+                  {desc1After}
+                  <AnimatePresence>
+                    {showFullDesc && (
+                      <motion.span
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 6 }}
+                        transition={{ duration: 0.2 }}
+                        className={`absolute z-30 bottom-full mb-2 w-72 sm:w-96 bg-primary text-white text-sm font-normal font-sans leading-relaxed rounded-xl shadow-2xl p-4 ${
+                          lang === "ar" ? "right-0 text-right" : "left-0 text-left"
+                        }`}
+                      >
+                        {t(lang, "about_desc2")}
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
+                </span>
               </p>
             </div>
 

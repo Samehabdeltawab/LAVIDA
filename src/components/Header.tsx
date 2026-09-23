@@ -56,7 +56,6 @@ export default function Header({ onAdminToggle, showAdminPortal }: HeaderProps) 
     { id: "hero", label: t(lang, "nav_home") },
     { id: "about", label: t(lang, "nav_about") },
     { id: "projects", label: t(lang, "nav_projects") },
-    { id: "whyus", label: t(lang, "nav_whyus") },
   ];
 
   return (
