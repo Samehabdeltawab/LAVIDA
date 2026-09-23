@@ -14,20 +14,63 @@ export default function Projects({ onNavigate }: Props) {
   const [unitsCount, setUnitsCount] = useState(0);
   const [typeCounts, setTypeCounts] = useState<Record<string, number>>({});
 
-  // Read units count from localStorage
+  // Map developer property type values (BuyerPropertyType) to Arabic category labels
+  const DEV_TYPE_MAP: Record<string, string> = {
+    apartment: "سكني",
+    villa: "سكني",
+    townhouse: "سكني",
+    land: "سكني",
+    other: "سكني",
+    chalet: "ساحلي",
+    office: "إداري",
+    retail: "تجاري",
+    medical: "طبي",
+    pharmacy: "طبي",
+  };
+
+  // Read approved units + approved developer partners from localStorage,
+  // and recompute whenever new data is approved by the admin.
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem("lavida_units_list");
-      if (saved) {
-        const list: { type?: string }[] = JSON.parse(saved);
-        setUnitsCount(list.length);
+    const loadCounts = () => {
+      try {
         const counts: Record<string, number> = {};
-        list.forEach((u) => {
-          if (u.type) counts[u.type] = (counts[u.type] || 0) + 1;
-        });
+        let total = 0;
+
+        const savedUnits = localStorage.getItem("lavida_units_list");
+        if (savedUnits) {
+          const list: { type?: string }[] = JSON.parse(savedUnits);
+          total += list.length;
+          list.forEach((u) => {
+            if (u.type) counts[u.type] = (counts[u.type] || 0) + 1;
+          });
+        }
+
+        const savedDevs = localStorage.getItem("lavida_developer_partners");
+        if (savedDevs) {
+          const list: { propertyTypes?: string[] }[] = JSON.parse(savedDevs);
+          list.forEach((d) => {
+            (d.propertyTypes || []).forEach((pt) => {
+              const category = DEV_TYPE_MAP[pt];
+              if (category) counts[category] = (counts[category] || 0) + 1;
+            });
+          });
+        }
+
+        setUnitsCount(total);
         setTypeCounts(counts);
-      }
-    } catch { /* ignore */ }
+      } catch { /* ignore */ }
+    };
+
+    loadCounts();
+
+    // Live-update when admin approves a request in the same tab/session
+    window.addEventListener("lavida:data-updated", loadCounts);
+    // Cross-tab update support
+    window.addEventListener("storage", loadCounts);
+    return () => {
+      window.removeEventListener("lavida:data-updated", loadCounts);
+      window.removeEventListener("storage", loadCounts);
+    };
   }, []);
 
   const projects: Project[] = [

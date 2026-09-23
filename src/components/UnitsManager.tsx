@@ -401,6 +401,7 @@ export default function UnitsManager({ isOpen, onClose }: UnitsManagerProps) {
       const raw = localStorage.getItem(UNITS_KEY);
       const existing: PropertyUnit[] = raw ? JSON.parse(raw) : [];
       localStorage.setItem(UNITS_KEY, JSON.stringify([unit, ...existing]));
+      window.dispatchEvent(new Event("lavida:data-updated"));
     } catch (e) {
       console.error("Failed to publish unit", e);
     }
@@ -448,6 +449,7 @@ export default function UnitsManager({ isOpen, onClose }: UnitsManagerProps) {
         addedDate: new Date().toISOString(),
       };
       localStorage.setItem(DEV_PARTNERS_KEY, JSON.stringify([partner, ...existing.filter(p => p.id !== dev.id)]));
+      window.dispatchEvent(new Event("lavida:data-updated"));
     } catch (e) {
       console.error("Failed to publish developer partner", e);
     }
@@ -502,6 +504,7 @@ export default function UnitsManager({ isOpen, onClose }: UnitsManagerProps) {
   const persist = (updated: PropertyUnit[]) => {
     setUnits(updated);
     localStorage.setItem(UNITS_KEY, JSON.stringify(updated));
+    window.dispatchEvent(new Event("lavida:data-updated"));
   };
 
   // ── Image Upload ──────────────────────────────────────────
