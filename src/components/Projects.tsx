@@ -120,10 +120,18 @@ export default function Projects({ onNavigate }: Props) {
     { type: "All",       label: t(lang, "projects_all") },
     { type: "سكني",      label: t(lang, "projects_residential") },
     { type: "تجاري",     label: t(lang, "projects_commercial") },
-    { type: "إداري",     label: lang === "ar" ? "إداري" : "Administrative" },
-    { type: "طبي",       label: lang === "ar" ? "طبي" : "Medical" },
     { type: "ساحلي",     label: t(lang, "projects_coastal") },
   ];
+
+  // "تجاري" tab covers commercial + administrative + medical combined
+  const COMMERCIAL_GROUP = ["تجاري", "إداري", "طبي"];
+  const getTabCount = (type: string) => {
+    if (type === "All") return unitsCount;
+    if (type === "تجاري") {
+      return COMMERCIAL_GROUP.reduce((sum, t) => sum + (typeCounts[t] || 0), 0);
+    }
+    return typeCounts[type] || 0;
+  };
 
   return (
     <section id="projects" className="py-20 bg-surface relative">
@@ -142,7 +150,7 @@ export default function Projects({ onNavigate }: Props) {
         {/* Category quick-nav tabs */}
         <div className={`flex flex-row flex-wrap gap-3 mb-10 border-b border-outline-variant/30 pb-4 ${lang === "ar" ? "justify-end" : "justify-start"}`}>
           {tabs.map(tab => {
-            const count = tab.type === "All" ? unitsCount : (typeCounts[tab.type] || 0);
+            const count = getTabCount(tab.type);
             const isActive = tab.type === "All" || count > 0;
             return (
               <button

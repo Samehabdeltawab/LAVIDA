@@ -58,7 +58,7 @@ const translations = {
 
     // Projects
     projects_tag: "مشاريعنا",
-    projects_title: "مشاريعنا المختارة",
+    projects_title: "مشاريعنا",
     projects_subtitle: "تصفح مجموعتنا الحصرية من العقارات الاستثنائية والفريدة في أرقى المواقع الجغرافية بمصر",
     projects_all: "الكل",
     projects_residential: "سكني وفندقي",
@@ -474,11 +474,11 @@ const translations = {
 
     // Projects
     projects_tag: "Our Projects",
-    projects_title: "Featured Projects",
+    projects_title: "Our Projects",
     projects_subtitle: "Browse our exclusive collection of exceptional properties in Egypt's most prestigious locations",
     projects_all: "All",
     projects_residential: "Residential & Hotel",
-    projects_commercial: "Commercial & Medical",
+    projects_commercial: "Commercial, Administrative & Medical",
     projects_coastal: "Coastal",
     projects_details: "View Details",
     projects_view_property: "View Property",
