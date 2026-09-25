@@ -56,7 +56,7 @@ export default function FounderModal({ isOpen, onClose }: Props) {
                   <div className="absolute -bottom-3 -left-3 w-full h-full border-2 border-secondary-fixed-dim rounded-2xl -z-10" />
                   <img
                     className="w-full rounded-2xl shadow-xl aspect-[3/4] object-cover object-top"
-                    alt="نادر بريك - مؤسس لاڤيدا بروبيرتز"
+                    alt="نادر بريك - مؤسس لافيدا العقارية"
                     src={CEOImage}
                   />
                 </div>

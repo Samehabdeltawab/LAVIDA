@@ -40,7 +40,7 @@ export default function About() {
               <img
                 referrerPolicy="no-referrer"
                 className="w-full aspect-[4/3] object-cover transition-transform duration-700 group-hover:scale-105"
-                alt="Lavida Properties Executive Office in Egypt"
+                alt="Lavida Real Estate Executive Office in Egypt"
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuAc1Kd6PT0DHWc-IDUfcuRVU_AUdTLsNPRTUmfofZERFEdeE98CkcgYJ3PIk061DT5n3vyMDy8VRuG67tVsbdlUDQlz4a9E2bJxW6N7XF2Uedy1QD5XkPZBodrW6XCrJN7sSMl_qJSF60Gg_KqdI_Pra8mmzlfM0nXvg72NpLmUITlPszfvvBXgEEfL1l4ZBLJwHPSEFuRQxsT2L_JSd7cG-CN8sp_WHVQNMRbi9qA0YPirCd2LSXOScotuSBZSc9RvbPuHha9XGA"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-transparent pointer-events-none"></div>

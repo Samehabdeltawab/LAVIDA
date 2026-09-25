@@ -1,6 +1,6 @@
-﻿<div align="center">
-  <img width="200" alt="Lavida Properties Logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDvGVh0fCaMCg2MP3nVvZXvzBJNaeoo67JBzQG3lY_Zy6cw26jjvraqVqpr5NqX-C9KcAJjvhUg6BYRCfaApVmuS1yVd7G4X5_eo2att-0IQDEW_hCcZZPmP8V-wwGMKxCdDlovPguFzYA9nx29Jqtf9i_4WGhyOR0b5OTnPXw5MqhOQmzLmTSCfNyFZ-8jr4Sin38feJUHwDK1LHsZoPj8zj2rBt7YH5r-vm3hZplsqIKtILpcW-dSNnlkpfdZJOjIiMoj74KuVQ" />
-  <h1>لاڤيدا بروبيرتز — Lavida Properties</h1>
+<div align="center">
+  <img width="200" alt="Lavida Real Estate Logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDvGVh0fCaMCg2MP3nVvZXvzBJNaeoo67JBzQG3lY_Zy6cw26jjvraqVqpr5NqX-C9KcAJjvhUg6BYRCfaApVmuS1yVd7G4X5_eo2att-0IQDEW_hCcZZPmP8V-wwGMKxCdDlovPguFzYA9nx29Jqtf9i_4WGhyOR0b5OTnPXw5MqhOQmzLmTSCfNyFZ-8jr4Sin38feJUHwDK1LHsZoPj8zj2rBt7YH5r-vm3hZplsqIKtILpcW-dSNnlkpfdZJOjIiMoj74KuVQ" />
+  <h1>لافيدا العقارية — Lavida Real Estate</h1>
   <p>بوابتك للاستثمار العقاري الفاخر في مصر</p>
 </div>
 
@@ -8,7 +8,7 @@
 
 ## 🏢 عن المشروع
 
-موقع رسمي لشركة **لاڤيدا بروبيرتز**، مبني بتقنيات حديثة ويعمل بشكل كامل على جميع الأجهزة. يعرض خدمات الشركة العقارية، مشاريعها، فريقها، وطريقة التواصل معها.
+موقع رسمي لشركة **لافيدا العقارية**، مبني بتقنيات حديثة ويعمل بشكل كامل على جميع الأجهزة. يعرض خدمات الشركة العقارية، مشاريعها، فريقها، وطريقة التواصل معها.
 
 ## ✨ المميزات
 
@@ -50,5 +50,5 @@ npm run dev
 ---
 
 <div align="center">
-  <p>© 2026 لاڤيدا بروبيرتز. جميع الحقوق محفوظة.</p>
+  <p>© 2026 لافيدا العقارية. جميع الحقوق محفوظة.</p>
 </div>

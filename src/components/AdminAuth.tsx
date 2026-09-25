@@ -116,7 +116,7 @@ export default function AdminAuth({ isOpen, onClose, onSuccess }: AdminAuthProps
         </form>
 
         <p className="text-xs text-gray-400 text-center mt-4">
-          {L("هذه الصفحة مخصصة لموظفي لاڤيدا بروبيرتز فقط", "This page is for Lavida Properties staff only")}
+          {L("هذه الصفحة مخصصة لموظفي لافيدا العقارية فقط", "This page is for Lavida Real Estate staff only")}
         </p>
       </motion.div>
     </div>

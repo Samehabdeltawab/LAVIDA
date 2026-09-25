@@ -1,4 +1,4 @@
-﻿export type Lang = "ar" | "en";
+export type Lang = "ar" | "en";
 
 const translations = {
   ar: {
@@ -439,8 +439,8 @@ const translations = {
 
     // About
     about_tag: "About Us",
-    about_title: "Lavida Properties: Leadership & Dynamism in the Egyptian Market",
-    about_desc1: "Lavida Properties is one of the leading and dynamic companies in the Egyptian real estate sector. We believe that real estate is not just walls, but an investment in the future and the building of communities.",
+    about_title: "Lavida Real Estate: Leadership & Dynamism in the Egyptian Market",
+    about_desc1: "Lavida Real Estate is one of the leading and dynamic companies in the Egyptian real estate sector. We believe that real estate is not just walls, but an investment in the future and the building of communities.",
     about_desc2: "With our deep market expertise and specialized team, we provide our clients with access to the best real estate opportunities in the most prestigious areas, ensuring transparency, professionalism, and full commitment to international standards at every step.",
     about_stat1_value: "+10",
     about_stat1_label: "Years of Market Experience",
@@ -529,7 +529,7 @@ const translations = {
     modal_location: "Location",
     modal_price: "Starting Price",
     modal_about: "About the Project",
-    modal_about_desc: "This project features architectural designs combining contemporary luxury with operational sustainability. We offer a unique and exclusive residential, hospitality, or commercial package for Lavida Properties clients to ensure a safe and distinguished investment for future generations.",
+    modal_about_desc: "This project features architectural designs combining contemporary luxury with operational sustainability. We offer a unique and exclusive residential, hospitality, or commercial package for Lavida Real Estate clients to ensure a safe and distinguished investment for future generations.",
     modal_specs: "General Specifications & Features",
     modal_amenities: "Built-in Facilities & Amenities",
     modal_note: "* Payment facilities and mortgage financing available up to 8 years interest-free.",
@@ -537,7 +537,7 @@ const translations = {
 
     // WhyUs
     whyus_tag: "Why Lavida",
-    whyus_title: "Why Choose Lavida Properties?",
+    whyus_title: "Why Choose Lavida Real Estate?",
     whyus_subtitle: "Your trusted partner throughout the buying or selling journey, from precise matching to full professional support",
     whyus1_title: "Buyer-Focused Matching",
     whyus1_desc: "We understand your needs and budget first, then recommend the properties best suited to your location and goals.",
@@ -556,7 +556,7 @@ const translations = {
     founder_tag: "Founder",
     founder_name: "Nader Borayek",
     founder_title: "Founder & CEO",
-    founder_quote: "\"A real estate expert with over 10 years of experience in the Egyptian market. My vision at Lavida Properties is to transform the face of luxury real estate investment by cementing the values of trusted transparency and high professionalism, and providing real, sustainable value that lasts for generations.\"",
+    founder_quote: "\"A real estate expert with over 10 years of experience in the Egyptian market. My vision at Lavida Real Estate is to transform the face of luxury real estate investment by cementing the values of trusted transparency and high professionalism, and providing real, sustainable value that lasts for generations.\"",
     founder_desc: "We always aim to exceed our clients' expectations and provide honest strategic consultations that protect and multiply capital amid the rapid changes in the Egyptian real estate sector.",
 
     // Contact
@@ -573,7 +573,7 @@ const translations = {
     contact_message_placeholder: "How can we help you?",
     contact_submit: "Send Request",
     contact_success_title: "Your request has been received!",
-    contact_success_desc: "Thank you for contacting Lavida Properties. Your details have been successfully recorded and are being reviewed. A real estate consultant will contact you within 24 hours.",
+    contact_success_desc: "Thank you for contacting Lavida Real Estate. Your details have been successfully recorded and are being reviewed. A real estate consultant will contact you within 24 hours.",
     contact_new_request: "Send New Request",
     contact_err_name_required: "Full name is required",
     contact_err_name_short: "Name must be at least 3 characters",
@@ -761,7 +761,7 @@ const translations = {
 
     sell_form_submit: "Submit My Property",
     sell_form_thankyou_title: "Thank you. Our property team will review your property and contact you.",
-    sell_form_thankyou_desc: "Your property details have been received. This submission is an initial step for review only, and does not represent acceptance or final confirmation by Lavida Properties.",
+    sell_form_thankyou_desc: "Your property details have been received. This submission is an initial step for review only, and does not represent acceptance or final confirmation by Lavida Real Estate.",
     sell_form_new_submission: "Submit Another Property",
 
     sell_form_err_required: "This field is required",
@@ -828,7 +828,7 @@ const translations = {
     match_close: "Close",
 
     // Footer
-    footer_rights: "© 2026 Lavida Properties. All rights reserved.",
+    footer_rights: "© 2026 Lavida Real Estate. All rights reserved.",
     footer_privacy: "Privacy Policy",
     footer_terms: "Terms & Conditions",
     footer_sitemap: "Sitemap",

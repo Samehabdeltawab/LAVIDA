@@ -4,7 +4,7 @@
 // phone number entered can be validated according to the selected
 // country's mobile number format.
 //
-// Kept intentionally focused on the markets Lavida Properties actively
+// Kept intentionally focused on the markets Lavida Real Estate actively
 // serves/targets (Egypt + GCC + a few common expat regions), rather than
 // an exhaustive list of every country in the world.
 

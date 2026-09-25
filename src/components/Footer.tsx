@@ -18,7 +18,7 @@ export default function Footer({ onScrollTo, onOpenAdmin, onOpenFounder, onOpenS
         {/* Right side: White inverted logo */}
         <div className="shrink-0 cursor-pointer" onClick={() => onScrollTo("hero")}>
           <img
-            alt="Lavida Properties Inverted Logo"
+            alt="Lavida Real Estate Inverted Logo"
             referrerPolicy="no-referrer"
             className="h-12 md:h-14 object-contain brightness-0 invert"
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuDvGVh0fCaMCg2MP3nVvZXvzBJNaeoo67JBzQG3lY_Zy6cw26jjvraqVqpr5NqX-C9KcAJjvhUg6BYRCfaApVmuS1yVd7G4X5_eo2att-0IQDEW_hCcZZPmP8V-wwGMKxCdDlovPguFzYA9nx29Jqtf9i_4WGhyOR0b5OTnPXw5MqhOQmzLmTSCfNyFZ-8jr4Sin38feJUHwDK1LHsZoPj8zj2rBt7YH5r-vm3hZplsqIKtILpcW-dSNnlkpfdZJOjIiMoj74KuVQ"
