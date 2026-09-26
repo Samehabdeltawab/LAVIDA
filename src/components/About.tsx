@@ -21,7 +21,7 @@ export default function About() {
   const desc1After = splitIdx >= 0 ? desc1Full.slice(splitIdx) : "";
 
   return (
-    <section id="about" className="py-20 bg-surface relative overflow-hidden">
+    <section id="about" className="py-20 bg-surface-container-low relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           

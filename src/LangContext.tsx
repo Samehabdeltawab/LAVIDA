@@ -16,6 +16,7 @@ export function LangProvider({ children }: { children: ReactNode }) {
     document.documentElement.lang = lang;
     document.body.style.direction = lang === "ar" ? "rtl" : "ltr";
     document.body.style.textAlign = lang === "ar" ? "right" : "left";
+    document.title = lang === "ar" ? "لافيدا العقارية" : "Lavida Real Estate";
   }, [lang]);
 
   const toggleLang = () => {
