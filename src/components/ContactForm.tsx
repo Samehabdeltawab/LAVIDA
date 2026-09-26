@@ -6,6 +6,20 @@ import { useLang } from "../LangContext";
 import { t } from "../i18n";
 import { trackContactFormSubmitted, trackWhatsAppClicked } from "../utils/analytics";
 
+// TikTok icon (not available in lucide-react) - simple inline SVG matching the stroke style of other icons
+function TikTokIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M16.5 3c.3 1.6 1.4 2.9 2.9 3.4.6.2 1.2.3 1.9.3v3.1c-1.3 0-2.6-.3-3.8-.9v6.3c0 3.2-2.6 5.8-5.9 5.8-3.2 0-5.9-2.6-5.9-5.8 0-3.1 2.5-5.7 5.6-5.8v3.2c-1.4.2-2.4 1.4-2.4 2.7 0 1.5 1.2 2.7 2.7 2.7 1.5 0 2.7-1.2 2.7-2.7V3h2.2z" />
+    </svg>
+  );
+}
+
 interface ContactFormProps {
   onLeadSubmit: (lead: Omit<LeadSubmission, "id" | "date" | "status">) => void;
 }
@@ -128,7 +142,7 @@ export default function ContactForm({ onLeadSubmit }: ContactFormProps) {
               {/* Social Media Icons - aligned to the right */}
               <div className="flex flex-row gap-3 justify-start mb-5">
                 <a
-                  href="https://www.facebook.com/lavidapropertieseg"
+                  href="https://www.facebook.com/share/19i5mr5DPo/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="p-2.5 rounded-lg bg-white/10 text-secondary-fixed hover:bg-secondary-fixed hover:text-primary transition-colors"
@@ -137,7 +151,7 @@ export default function ContactForm({ onLeadSubmit }: ContactFormProps) {
                   <Facebook className="h-5 w-5" />
                 </a>
                 <a
-                  href="https://www.instagram.com/lavidapropertieseg"
+                  href="https://www.instagram.com/lavidarealtyeg?stkn=M2M5MHo5MnRrcWYy"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="p-2.5 rounded-lg bg-white/10 text-secondary-fixed hover:bg-secondary-fixed hover:text-primary transition-colors"
@@ -146,13 +160,22 @@ export default function ContactForm({ onLeadSubmit }: ContactFormProps) {
                   <Instagram className="h-5 w-5" />
                 </a>
                 <a
-                  href="https://www.linkedin.com/company/lavidapropertieseg"
+                  href="https://www.linkedin.com/company/lavidarc/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="p-2.5 rounded-lg bg-white/10 text-secondary-fixed hover:bg-secondary-fixed hover:text-primary transition-colors"
                   aria-label="LinkedIn"
                 >
                   <Linkedin className="h-5 w-5" />
+                </a>
+                <a
+                  href="http://tiktok.com/@lavidarealestate"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2.5 rounded-lg bg-white/10 text-secondary-fixed hover:bg-secondary-fixed hover:text-primary transition-colors"
+                  aria-label="TikTok"
+                >
+                  <TikTokIcon className="h-5 w-5" />
                 </a>
                 <a
                   href="https://wa.me/201003306688"

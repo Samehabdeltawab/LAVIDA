@@ -45,7 +45,7 @@ npm run dev
 - 📧 Lavidapropertieseg@gmail.com
 - 📞 +20 100 330 6688
 - 📍 الشيخ زايد - الكورت يارد Office F-315-1
-- 🌐 [Facebook](https://www.facebook.com/lavidapropertieseg) | [Instagram](https://www.instagram.com/lavidapropertieseg) | [LinkedIn](https://www.linkedin.com/company/lavidapropertieseg)
+- 🌐 [Facebook](https://www.facebook.com/share/19i5mr5DPo/) | [Instagram](https://www.instagram.com/lavidarealtyeg?stkn=M2M5MHo5MnRrcWYy) | [LinkedIn](https://www.linkedin.com/company/lavidarc/)
 
 ---
 
