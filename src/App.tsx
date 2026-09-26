@@ -172,12 +172,11 @@ export default function App() {
       {/* 4. Featured Properties */}
       <Projects onNavigate={handleNavigate} />
 
-      {/* 5. Complete Services Modular Interactive Block */}
-      {/* Temporarily hidden - remove this comment wrapper to re-enable */}
-      {/* <Services /> */}
-
       {/* 7b. Approved Developer Partners (public, populated after admin approval) */}
       <DeveloperPartners />
+
+      {/* 5. Complete Services Modular Interactive Block */}
+      <Services />
 
       {/* 8. Conversion lead generation module */}
       <ContactForm onLeadSubmit={handleLeadSubmit} />

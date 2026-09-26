@@ -12,22 +12,22 @@ interface FooterProps {
 export default function Footer({ onScrollTo, onOpenAdmin, onOpenFounder, onOpenSubmitProject }: FooterProps) {
   const { lang } = useLang();
   return (
-    <footer className="bg-primary text-white py-12 border-t border-white/5 relative">
+    <footer className="bg-primary text-white py-6 border-t border-white/5 relative">
       <div className="w-full max-w-7xl mx-auto px-6 md:px-12">
-        <div className="flex flex-col items-center justify-center py-6 gap-6">
+        <div dir="ltr" className="flex flex-row items-center justify-between py-3 gap-4 flex-wrap">
 
-          {/* Logo */}
-          <div className="shrink-0 cursor-pointer" onClick={() => onScrollTo("hero")}>
+          {/* Logo - always physically on the left, regardless of language */}
+          <div className="shrink-0 cursor-pointer order-1" onClick={() => onScrollTo("hero")}>
             <img
               alt="Lavida Real Estate Inverted Logo"
               referrerPolicy="no-referrer"
-              className="h-14 md:h-16 object-contain brightness-0 invert"
+              className="h-10 md:h-12 object-contain brightness-0 invert"
               src="/logo5-clean.png"
             />
           </div>
 
-          {/* Legal RTL anchor links + Admin, centered */}
-          <div className="flex flex-row flex-wrap items-center justify-center gap-6 sm:gap-8 text-on-primary-container font-sans text-xs">
+          {/* Legal links + Admin - always physically on the right, regardless of language */}
+          <div className="flex flex-row flex-wrap items-center justify-end gap-5 sm:gap-7 text-on-primary-container font-sans text-xs order-2">
             <a href="#privacy" className="hover:text-secondary-fixed transition-colors">
               {t(lang, "footer_privacy")}
             </a>
@@ -63,7 +63,7 @@ export default function Footer({ onScrollTo, onOpenAdmin, onOpenFounder, onOpenS
         </div>
 
         {/* Bottom: Copyrights centered */}
-        <div className="border-t border-white/10 pt-6 flex justify-center">
+        <div className="border-t border-white/10 pt-3 pb-1 flex justify-center">
           <p className="font-sans text-xs text-on-primary-container/60 text-center">
             {t(lang, "footer_rights")}
           </p>
