@@ -7,6 +7,9 @@ export default defineConfig(() => {
   return {
     base: '/', // 👈 تم التعديل هنا إلى سلاش واحدة فقط لأن عندك دومين مخصص
     plugins: [react(), tailwindcss()],
+    build: {
+      outDir: 'docs', // 👈 GitHub Pages تقدر تقرأ من /docs في فرع main مباشرة
+    },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
