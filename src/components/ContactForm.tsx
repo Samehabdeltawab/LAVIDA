@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Phone, Mail, MapPin, Send, CheckCircle, Facebook, Instagram, Linkedin } from "lucide-react";
+import { Phone, Mail, MapPin, Send, CheckCircle, Facebook, Instagram, Linkedin, Youtube } from "lucide-react";
 import { LeadSubmission } from "../types";
 import { useLang } from "../LangContext";
 import { t } from "../i18n";
@@ -16,6 +16,20 @@ function TikTokIcon({ className }: { className?: string }) {
       aria-hidden="true"
     >
       <path d="M16.5 3c.3 1.6 1.4 2.9 2.9 3.4.6.2 1.2.3 1.9.3v3.1c-1.3 0-2.6-.3-3.8-.9v6.3c0 3.2-2.6 5.8-5.9 5.8-3.2 0-5.9-2.6-5.9-5.8 0-3.1 2.5-5.7 5.6-5.8v3.2c-1.4.2-2.4 1.4-2.4 2.7 0 1.5 1.2 2.7 2.7 2.7 1.5 0 2.7-1.2 2.7-2.7V3h2.2z" />
+    </svg>
+  );
+}
+
+// Snapchat icon (not available in lucide-react) - simple inline SVG
+function SnapchatIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M12.001 2c-2.688 0-4.86 1.94-4.995 4.59-.02.36-.02.865-.017 1.328l.003.335c-.006.043-.09.096-.204.15-.146.07-.34.117-.55.117-.246 0-.508-.075-.723-.192a.577.577 0 00-.276-.075c-.29 0-.55.19-.632.474-.093.32.045.664.34.828.033.02.808.474.808 1.09 0 .126-.016.257-.05.393-.155.61-.79 1.29-1.38 1.663-.2.126-.432.288-.4.53.032.245.29.4.55.485.34.11.78.192 1.16.31.04.21.083.44.146.66.02.075.09.13.17.13.02 0 .043-.003.064-.01.394-.14.77-.21 1.093-.21.57 0 .89.213 1.32.6.61.55 1.38 1.23 2.82 1.23.036 0 .07 0 .107-.003l.107.003c1.44 0 2.21-.68 2.82-1.23.43-.387.75-.6 1.32-.6.323 0 .7.07 1.093.21.02.007.043.01.064.01.08 0 .15-.055.17-.13.063-.22.106-.45.146-.66.38-.118.82-.2 1.16-.31.26-.085.518-.24.55-.485.032-.242-.2-.404-.4-.53-.59-.373-1.225-1.052-1.38-1.663a1.62 1.62 0 01-.05-.393c0-.616.775-1.07.808-1.09.295-.164.433-.508.34-.828a.65.65 0 00-.632-.474.577.577 0 00-.276.075c-.215.117-.477.192-.723.192-.21 0-.404-.048-.55-.117-.114-.054-.198-.107-.204-.15l.003-.335c.003-.463.003-.968-.017-1.328C16.86 3.94 14.69 2 12.001 2z" />
     </svg>
   );
 }
@@ -176,6 +190,24 @@ export default function ContactForm({ onLeadSubmit }: ContactFormProps) {
                   aria-label="TikTok"
                 >
                   <TikTokIcon className="h-5 w-5" />
+                </a>
+                <a
+                  href="https://www.snapchat.com/add/lavidarealestat?share_id=ExIlBwQm8jg&locale=en-EG"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2.5 rounded-lg bg-white/10 text-secondary-fixed hover:bg-secondary-fixed hover:text-primary transition-colors"
+                  aria-label="Snapchat"
+                >
+                  <SnapchatIcon className="h-5 w-5" />
+                </a>
+                <a
+                  href="https://youtube.com/@lavidarealtyeg?si=_hMtAKEvzB-j_qOb"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2.5 rounded-lg bg-white/10 text-secondary-fixed hover:bg-secondary-fixed hover:text-primary transition-colors"
+                  aria-label="YouTube"
+                >
+                  <Youtube className="h-5 w-5" />
                 </a>
                 <a
                   href="https://wa.me/201003306688"
