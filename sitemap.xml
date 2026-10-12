@@ -3,7 +3,7 @@
 
   <!-- الصفحة الرئيسية -->
   <url>
-    <loc>https://lavidaproperties.net/</loc>
+    <loc>https://lavida-eg.com/</loc>
     <lastmod>2026-05-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
@@ -11,7 +11,7 @@
 
   <!-- قسم المشاريع والوحدات المعروضة -->
   <url>
-    <loc>https://lavidaproperties.net/#projects</loc>
+    <loc>https://lavida-eg.com/#projects</loc>
     <lastmod>2026-05-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -19,7 +19,7 @@
 
   <!-- قسم بيع العقار -->
   <url>
-    <loc>https://lavidaproperties.net/#sell-property</loc>
+    <loc>https://lavida-eg.com/#sell-property</loc>
     <lastmod>2026-05-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -27,7 +27,7 @@
 
   <!-- قسم الشراكة مع المطورين -->
   <url>
-    <loc>https://lavidaproperties.net/#developers</loc>
+    <loc>https://lavida-eg.com/#developers</loc>
     <lastmod>2026-05-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -35,7 +35,7 @@
 
   <!-- قسم التواصل -->
   <url>
-    <loc>https://lavidaproperties.net/#contact</loc>
+    <loc>https://lavida-eg.com/#contact</loc>
     <lastmod>2026-05-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
