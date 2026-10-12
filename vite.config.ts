@@ -7,6 +7,9 @@ export default defineConfig(() => {
   return {
     base: '/', // 👈 تم التعديل هنا إلى سلاش واحدة فقط لأن عندك دومين مخصص
     plugins: [react(), tailwindcss()],
+    build: {
+      outDir: 'docs', // GitHub Pages يدعم نشر مباشر من فولدر /docs على فرع main
+    },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
