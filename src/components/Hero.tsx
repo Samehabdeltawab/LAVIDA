@@ -30,13 +30,16 @@ export default function Hero({ onCtaclick, onOpenBuyerIntake, onOpenSellForm, on
       id="hero"
       className="relative min-h-screen flex flex-col overflow-hidden pt-20"
     >
-      {/* Background Image & Overlay (covers the whole merged section) */}
+      {/* Background Video & Overlay (covers the whole merged section) */}
       <div className="absolute inset-0 z-0">
-        <img
-          referrerPolicy="no-referrer"
+        <video
           className="w-full h-full object-cover"
-          alt="Modern luxury skyscrapers in Egypt"
-          src="https://lh3.googleusercontent.com/aida-public/AB6AXuCE2nNhpO7ujaoerVS0i59vkfpMgiKCZcAEgxrPS-qCK8TAatlw1kM8J6z9CpPDD9OJg_MpSMqH0SY4plA-rYwb09gZnWTOPIEFV8qVIYW4PFL2rFn1va9v3Yrgr8c0wXEfv1-funRY_0Lp1KO4Ak3AF-FYX2Wy5AemLjlWd76AqmBE49e3uYY9XsMIESdnjXSbG_uCu3mDfueoNmSbT-TKbGdT9ef3JGl7T111TeIm5jwvSLHlzQdiGah_AZLjYDfjG1hS3Lo7yg"
+          src="/hero.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
+          poster="https://lh3.googleusercontent.com/aida-public/AB6AXuCE2nNhpO7ujaoerVS0i59vkfpMgiKCZcAEgxrPS-qCK8TAatlw1kM8J6z9CpPDD9OJg_MpSMqH0SY4plA-rYwb09gZnWTOPIEFV8qVIYW4PFL2rFn1va9v3Yrgr8c0wXEfv1-funRY_0Lp1KO4Ak3AF-FYX2Wy5AemLjlWd76AqmBE49e3uYY9XsMIESdnjXSbG_uCu3mDfueoNmSbT-TKbGdT9ef3JGl7T111TeIm5jwvSLHlzQdiGah_AZLjYDfjG1hS3Lo7yg"
         />
         <div className="absolute inset-0 bg-primary/70 backdrop-blur-[2px]"></div>
       </div>
