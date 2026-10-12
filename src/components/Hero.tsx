@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useLang } from "../LangContext";
 import { t } from "../i18n";
@@ -13,6 +13,54 @@ interface HeroProps {
 export default function Hero({ onCtaclick, onOpenBuyerIntake, onOpenSellForm, onOpenDeveloperForm }: HeroProps) {
   const { lang } = useLang();
   const [showFullDesc, setShowFullDesc] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [muted, setMuted] = useState(true);
+  const lastScrollY = useRef(0);
+
+  // Try to autoplay with sound on mount; fall back to muted if blocked by the browser.
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.muted = false;
+    const playPromise = video.play();
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => setMuted(false))
+        .catch(() => {
+          // Autoplay with sound blocked by browser - fall back to muted autoplay
+          video.muted = true;
+          setMuted(true);
+          video.play().catch(() => {});
+        });
+    }
+
+    lastScrollY.current = window.scrollY;
+
+    const handleScroll = () => {
+      const currentY = window.scrollY;
+      if (currentY > lastScrollY.current) {
+        // Scrolling down -> mute
+        setMuted(true);
+      } else if (currentY < lastScrollY.current) {
+        // Scrolling up -> unmute
+        setMuted(false);
+      }
+      lastScrollY.current = currentY;
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Keep the video element's muted state in sync with our state
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.muted = muted;
+    }
+  }, [muted]);
+
+  const toggleMute = () => setMuted((prev) => !prev);
 
   const stats = [
     { value: t(lang, "about_stat1_value"), label: t(lang, "about_stat1_label") },
@@ -29,20 +77,23 @@ export default function Hero({ onCtaclick, onOpenBuyerIntake, onOpenSellForm, on
     <section
       id="hero"
       className="relative min-h-screen flex flex-col overflow-hidden pt-20"
+      onClick={toggleMute}
     >
       {/* Background Video & Overlay (covers the whole merged section) */}
       <div className="absolute inset-0 z-0">
         <video
+          ref={videoRef}
           className="w-full h-full object-cover"
           src="/hero.mp4"
           autoPlay
           loop
-          muted
+          muted={muted}
           playsInline
           poster="https://lh3.googleusercontent.com/aida-public/AB6AXuCE2nNhpO7ujaoerVS0i59vkfpMgiKCZcAEgxrPS-qCK8TAatlw1kM8J6z9CpPDD9OJg_MpSMqH0SY4plA-rYwb09gZnWTOPIEFV8qVIYW4PFL2rFn1va9v3Yrgr8c0wXEfv1-funRY_0Lp1KO4Ak3AF-FYX2Wy5AemLjlWd76AqmBE49e3uYY9XsMIESdnjXSbG_uCu3mDfueoNmSbT-TKbGdT9ef3JGl7T111TeIm5jwvSLHlzQdiGah_AZLjYDfjG1hS3Lo7yg"
         />
         <div className="absolute inset-0 bg-primary/70 backdrop-blur-[2px]"></div>
       </div>
+
 
       {/* Hero Content (top half) */}
       <div className="relative z-10 flex-1 flex items-center justify-center">
