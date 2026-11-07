@@ -9,7 +9,7 @@ interface AdminAuthProps {
   onSuccess: () => void;
 }
 
-const ADMIN_HASH = "49dd816844a66c7e4f482376db424c5cdb846ee1811cb94248c1f58a6c12f9e8";
+const ADMIN_HASH = "0fdd8611b130558d5bd9f19e7b34b5838afbfd283b86705b2bc62be7ba954e0f";
 
 export default function AdminAuth({ isOpen, onClose, onSuccess }: AdminAuthProps) {
   const { lang } = useLang();

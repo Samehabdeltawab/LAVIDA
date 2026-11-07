@@ -56,6 +56,9 @@ export default function Header({ onAdminToggle, showAdminPortal }: HeaderProps) 
     { id: "hero", label: t(lang, "nav_home") },
     { id: "about", label: t(lang, "nav_about") },
     { id: "projects", label: t(lang, "nav_projects") },
+    // Hidden sections (re-enable together with Services / WhyUs in App.tsx)
+    // { id: "services", label: t(lang, "nav_services") },
+    // { id: "whyus", label: t(lang, "nav_whyus") },
   ];
 
   return (
@@ -65,7 +68,7 @@ export default function Header({ onAdminToggle, showAdminPortal }: HeaderProps) 
         {/* Right side: Logo (strictly RTL aligned) */}
         <div className="flex items-center cursor-pointer" onClick={() => handleScrollTo("hero")}>
           <img
-            alt="Lavida Real Estate"
+            alt="Lavida Properties"
             referrerPolicy="no-referrer"
             className="h-12 md:h-14 object-contain"
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuDvGVh0fCaMCg2MP3nVvZXvzBJNaeoo67JBzQG3lY_Zy6cw26jjvraqVqpr5NqX-C9KcAJjvhUg6BYRCfaApVmuS1yVd7G4X5_eo2att-0IQDEW_hCcZZPmP8V-wwGMKxCdDlovPguFzYA9nx29Jqtf9i_4WGhyOR0b5OTnPXw5MqhOQmzLmTSCfNyFZ-8jr4Sin38feJUHwDK1LHsZoPj8zj2rBt7YH5r-vm3hZplsqIKtILpcW-dSNnlkpfdZJOjIiMoj74KuVQ"

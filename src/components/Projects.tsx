@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "motion/react";
+import { MapPin, Coins, Layers } from "lucide-react";
 import { Project } from "../types";
 import { useLang } from "../LangContext";
 import { t } from "../i18n";
@@ -11,65 +12,13 @@ interface Props {
 export default function Projects({ onNavigate }: Props) {
   const { lang } = useLang();
   const [unitsCount, setUnitsCount] = useState(0);
-  const [typeCounts, setTypeCounts] = useState<Record<string, number>>({});
 
-  // Map developer property type values (BuyerPropertyType) to Arabic category labels
-  const DEV_TYPE_MAP: Record<string, string> = {
-    apartment: "سكني",
-    villa: "سكني",
-    townhouse: "سكني",
-    land: "سكني",
-    other: "سكني",
-    chalet: "ساحلي",
-    office: "إداري",
-    retail: "تجاري",
-    medical: "طبي",
-    pharmacy: "طبي",
-  };
-
-  // Read approved units + approved developer partners from localStorage,
-  // and recompute whenever new data is approved by the admin.
+  // Read units count from localStorage
   useEffect(() => {
-    const loadCounts = () => {
-      try {
-        const counts: Record<string, number> = {};
-        let total = 0;
-
-        const savedUnits = localStorage.getItem("lavida_units_list");
-        if (savedUnits) {
-          const list: { type?: string }[] = JSON.parse(savedUnits);
-          total += list.length;
-          list.forEach((u) => {
-            if (u.type) counts[u.type] = (counts[u.type] || 0) + 1;
-          });
-        }
-
-        const savedDevs = localStorage.getItem("lavida_developer_partners");
-        if (savedDevs) {
-          const list: { propertyTypes?: string[] }[] = JSON.parse(savedDevs);
-          list.forEach((d) => {
-            (d.propertyTypes || []).forEach((pt) => {
-              const category = DEV_TYPE_MAP[pt];
-              if (category) counts[category] = (counts[category] || 0) + 1;
-            });
-          });
-        }
-
-        setUnitsCount(total);
-        setTypeCounts(counts);
-      } catch { /* ignore */ }
-    };
-
-    loadCounts();
-
-    // Live-update when admin approves a request in the same tab/session
-    window.addEventListener("lavida:data-updated", loadCounts);
-    // Cross-tab update support
-    window.addEventListener("storage", loadCounts);
-    return () => {
-      window.removeEventListener("lavida:data-updated", loadCounts);
-      window.removeEventListener("storage", loadCounts);
-    };
+    try {
+      const saved = localStorage.getItem("lavida_units_list");
+      if (saved) setUnitsCount(JSON.parse(saved).length);
+    } catch { /* ignore */ }
   }, []);
 
   const projects: Project[] = [
@@ -116,65 +65,41 @@ export default function Projects({ onNavigate }: Props) {
   };
 
   const tabs = [
-    { type: "All",       label: t(lang, "projects_all") },
-    { type: "سكني",      label: t(lang, "projects_residential") },
-    { type: "تجاري",     label: t(lang, "projects_commercial") },
-    { type: "ساحلي",     label: t(lang, "projects_coastal") },
+    { type: "All",                                      label: t(lang, "projects_all") },
+    { type: "سكني",            label: t(lang, "projects_residential") },
+    { type: "تجاري",    label: t(lang, "projects_commercial") },
+    { type: "ساحلي",    label: t(lang, "projects_coastal") },
   ];
 
-  // "تجاري" tab covers commercial + administrative + medical combined
-  const COMMERCIAL_GROUP = ["تجاري", "إداري", "طبي"];
-  const getTabCount = (type: string) => {
-    if (type === "All") return unitsCount;
-    if (type === "تجاري") {
-      return COMMERCIAL_GROUP.reduce((sum, t) => sum + (typeCounts[t] || 0), 0);
-    }
-    return typeCounts[type] || 0;
-  };
-
   return (
-    <section id="projects" className="py-10 bg-surface relative">
+    <section id="projects" className="py-20 bg-surface relative">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
 
         {/* Header */}
-        <div className={`mb-6 ${lang === "ar" ? "text-right" : "text-left"}`}>
-          <h2 className="font-display text-2xl md:text-3xl font-bold text-primary">
+        <div className={`mb-12 ${lang === "ar" ? "text-right" : "text-left"}`}>
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-primary">
             {t(lang, "projects_title")}
           </h2>
+          <p className="font-sans text-sm md:text-base text-on-surface-variant mt-2">
+            {t(lang, "projects_subtitle")}
+          </p>
         </div>
 
         {/* Category quick-nav tabs */}
-        <div className={`flex flex-row flex-wrap gap-3 mb-6 border-b border-outline-variant/30 pb-4 ${lang === "ar" ? "justify-end" : "justify-start"}`}>
-          {tabs.map(tab => {
-            const count = getTabCount(tab.type);
-            const isActive = tab.type === "All" || count > 0;
-            return (
-              <button
-                key={tab.type}
-                onClick={() => onNavigate(tab.type)}
-                className={`relative font-display text-sm font-semibold px-5 py-2.5 rounded-lg transition-all duration-300 cursor-pointer flex items-center gap-2 ${
-                  isActive
-                    ? "bg-surface-container-low text-on-surface-variant hover:bg-primary hover:text-white"
-                    : "bg-surface-container-low/50 text-on-surface-variant/40 hover:bg-primary/70 hover:text-white"
-                }`}
-              >
-                {tab.label}
-                {tab.type !== "All" && (
-                  <span
-                    className={`inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1 rounded-full text-[11px] font-bold ${
-                      isActive ? "bg-secondary text-white" : "bg-outline-variant/40 text-on-surface-variant/60"
-                    }`}
-                  >
-                    {count}
-                  </span>
-                )}
-              </button>
-            );
-          })}
+        <div className={`flex flex-row flex-wrap gap-3 mb-10 border-b border-outline-variant/30 pb-4 ${lang === "ar" ? "justify-end" : "justify-start"}`}>
+          {tabs.map(tab => (
+            <button
+              key={tab.type}
+              onClick={() => onNavigate(tab.type)}
+              className="font-display text-sm font-semibold px-5 py-2.5 rounded-lg bg-surface-container-low text-on-surface-variant hover:bg-primary hover:text-white transition-all duration-300 cursor-pointer"
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
 
         {/* Projects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {projects.map(p => (
             <motion.div
               key={p.id}
@@ -182,7 +107,7 @@ export default function Projects({ onNavigate }: Props) {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
-              className="group relative overflow-hidden rounded-xl h-[220px] shadow-md border border-outline-variant/10"
+              className="group relative overflow-hidden rounded-2xl h-[480px] shadow-lg border border-outline-variant/10"
             >
               <img
                 referrerPolicy="no-referrer"
@@ -191,14 +116,36 @@ export default function Projects({ onNavigate }: Props) {
                 src={p.image}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/55 to-transparent z-10 group-hover:via-primary/65 transition-opacity duration-300" />
-              <div className="absolute inset-0 z-20 flex items-center justify-center px-6">
-                <div className="bg-secondary px-4 py-2 rounded-lg text-white font-display text-sm sm:text-base font-bold shadow-md text-center">
-                  {p.category}
+              <div className="absolute top-6 right-6 z-20 bg-secondary px-3.5 py-1.5 rounded-lg text-white font-display text-xs font-bold shadow-md">
+                {p.category}
+              </div>
+              <div className={`absolute bottom-0 left-0 right-0 p-8 z-20 space-y-4 ${lang === "ar" ? "text-right" : "text-left"}`}>
+                <div className="space-y-2">
+                  <h3 className="font-display text-2xl font-bold text-white tracking-wide">{p.title}</h3>
+                  <p className="font-sans text-sm text-surface-variant line-clamp-2 leading-relaxed opacity-95">{p.description}</p>
+                </div>
+                <div className="w-full bg-secondary/60 text-white/70 py-3 rounded-xl font-display text-sm font-bold shadow-lg flex items-center justify-center gap-2 cursor-not-allowed">
+                  {t(lang, "projects_details")}
                 </div>
               </div>
             </motion.div>
           ))}
         </div>
+
+        {/* Units counter banner */}
+        {unitsCount > 0 && (
+          <div className="mt-10 text-center">
+            <button
+              onClick={() => onNavigate("All")}
+              className="inline-flex items-center gap-2 bg-secondary/10 border border-secondary/30 text-secondary px-6 py-3 rounded-xl font-display text-sm font-bold hover:bg-secondary hover:text-white transition-all cursor-pointer shadow-sm"
+            >
+              <Layers className="h-4 w-4" />
+              {lang === "ar"
+                ? `عرض الوحدات المتاحة · ${unitsCount} وحدة`
+                : `View Available Units · ${unitsCount} unit(s)`}
+            </button>
+          </div>
+        )}
 
       </div>
     </section>

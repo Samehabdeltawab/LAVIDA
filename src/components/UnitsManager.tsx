@@ -1,233 +1,31 @@
-﻿import { useState, useEffect, useRef, useCallback, FormEvent, ChangeEvent } from "react";
+﻿import { useState, useEffect, useRef, FormEvent, ChangeEvent } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
   X, Plus, Edit2, Trash2, Search, Save, Download,
   Home, Hotel, ShoppingBag, Briefcase, Stethoscope, Waves,
   BarChart3, LogOut, AlertCircle, ImageIcon, Film, Loader2, CheckCircle2,
-  XCircle, RefreshCw, Building2, Phone, ClipboardList, Layers,
 } from "lucide-react";
-import { PropertyUnit, SellPropertySubmission, DeveloperLead, BuyerRequirement, FinishingStatus, SellPropertyType } from "../types";
+import { PropertyUnit } from "../types";
 import { storeBlob, getBlobUrl, removeBlob, compressImage } from "../utils/mediaDB";
-import {
-  getSellPropertySubmissions,
-  updateSellPropertySubmissionStatus,
-  deleteSellPropertySubmission,
-} from "../utils/sellPropertyLeads";
-import {
-  getDeveloperLeads,
-  updateDeveloperLeadStatus,
-  deleteDeveloperLead,
-} from "../utils/developerLeads";
-import {
-  getBuyerRequirements,
-  updateBuyerRequirementStatus,
-  deleteBuyerRequirement,
-} from "../utils/buyerRequirements";
 import { useLang } from "../LangContext";
 
 interface UnitsManagerProps {
   isOpen: boolean;
   onClose: () => void;
+  onOpenProjectApprovals?: () => void;
+  pendingProjectsCount?: number;
 }
 
 const UNITS_KEY = "lavida_units_list";
-export const DEV_PARTNERS_KEY = "lavida_developer_partners";
 
+// Published developer partners shown publicly in DeveloperPartners.tsx
+export const DEV_PARTNERS_KEY = "lavida_dev_partners_list";
 export interface PublishedDeveloperPartner {
   id: string;
   companyName: string;
   companyLogo: string;
-  projectName: string;
-  location: string;
-  unitsAvailable: string;
-  startingPrice: string;
-  propertyTypes: string[];
-  deliveryTimeline: string;
-  phone: string;
-  whatsapp: string;
-  website: string;
-  addedDate: string;
+  website?: string;
 }
-
-// ── Requests (approvals) mapping ─────────────────────────────────────────────
-const REQ_TYPE_MAP: Record<SellPropertyType, PropertyUnit["type"]> = {
-  apartment: "سكني",
-  villa: "سكني",
-  townhouse: "سكني",
-  chalet: "ساحلي",
-  office: "إداري",
-  retail: "تجاري",
-  medical: "طبي",
-  pharmacy: "طبي",
-  land: "سكني",
-  other: "سكني",
-};
-
-const REQ_FINISHING_MAP: Record<FinishingStatus, PropertyUnit["finishing"]> = {
-  fully_finished: "تشطيب كامل",
-  semi_finished: "نصف تشطيب",
-  core_shell: "بدون تشطيب",
-  super_lux: "سوبر لوكس",
-};
-
-function mapSubmissionToUnit(sub: SellPropertySubmission): PropertyUnit {
-  const addressParts = [sub.district, sub.governorate, sub.address].filter(Boolean);
-  return {
-    id: "unit_" + Math.random().toString(36).substring(2, 9),
-    name: sub.compound || `عقار في ${sub.governorate}`,
-    type: REQ_TYPE_MAP[sub.propertyType] || "سكني",
-    projectName: sub.compound || "-",
-    developerName: `مالك مباشر: ${sub.fullName}`,
-    address: addressParts.join(" - ") || sub.governorate,
-    area: sub.area,
-    floor: sub.floor || "-",
-    totalPrice: sub.askingPrice,
-    pricePerMeter: "-",
-    rooms: sub.bedrooms || "-",
-    bathrooms: sub.bathrooms || "-",
-    finishing: sub.finishing ? REQ_FINISHING_MAP[sub.finishing] : "بدون تشطيب",
-    status: "متاح",
-    images: sub.images,
-    videoUrl: "",
-    notes: sub.description || "",
-    addedDate: new Date().toISOString(),
-  };
-}
-
-function IdbThumb({ src }: { src: string; key?: string }) {
-  const [url, setUrl] = useState<string | null>(null);
-  useEffect(() => {
-    if (src.startsWith("idb:")) {
-      getBlobUrl(src.slice(4)).then((u) => setUrl(u));
-    } else {
-      setUrl(src);
-    }
-  }, [src]);
-  if (!url) return <div className="w-14 h-14 rounded-lg bg-gray-100 animate-pulse shrink-0" />;
-  return <img src={url} alt="" className="w-14 h-14 rounded-lg object-cover border border-gray-200 shrink-0" />;
-}
-
-/** Resolves an "idb:" file reference (or plain URL) to a clickable/openable link, works for any file type (PDF, DOC, images...). */
-function IdbFileLink({ src, label }: { src: string; label: string }) {
-  const [url, setUrl] = useState<string | null>(null);
-  useEffect(() => {
-    if (src.startsWith("idb:")) {
-      getBlobUrl(src.slice(4)).then((u) => setUrl(u));
-    } else {
-      setUrl(src);
-    }
-  }, [src]);
-  if (!url) {
-    return <span className="text-xs text-gray-400">{label}...</span>;
-  }
-  return (
-    <a
-      href={url}
-      target="_blank"
-      rel="noreferrer"
-      className="inline-flex items-center gap-1.5 text-primary font-semibold text-sm hover:underline"
-    >
-      {label}
-    </a>
-  );
-}
-
-// ── Bilingual display maps for request codes (stored as English enum values) ─
-const REQ_PROPERTY_TYPE_DISPLAY: Record<string, { ar: string; en: string }> = {
-  apartment: { ar: "شقة", en: "Apartment" },
-  villa: { ar: "فيلا", en: "Villa" },
-  townhouse: { ar: "تاون هاوس", en: "Townhouse" },
-  chalet: { ar: "شاليه", en: "Chalet" },
-  office: { ar: "مكتب إداري", en: "Office" },
-  retail: { ar: "محل تجاري", en: "Retail" },
-  medical: { ar: "وحدة طبية", en: "Medical Unit" },
-  pharmacy: { ar: "صيدلية", en: "Pharmacy" },
-  land: { ar: "أرض", en: "Land" },
-  other: { ar: "أخرى", en: "Other" },
-};
-
-const REQ_FINISHING_DISPLAY: Record<string, { ar: string; en: string }> = {
-  fully_finished: { ar: "تشطيب كامل", en: "Fully Finished" },
-  semi_finished: { ar: "نصف تشطيب", en: "Semi Finished" },
-  core_shell: { ar: "بدون تشطيب", en: "Core & Shell" },
-  super_lux: { ar: "سوبر لوكس", en: "Super Lux" },
-};
-
-const REQ_FURNISHED_DISPLAY: Record<string, { ar: string; en: string }> = {
-  furnished_with_ac: { ar: "مفروش بتكييفات", en: "Furnished with AC" },
-  furnished_without_ac: { ar: "مفروش بدون تكييفات", en: "Furnished without AC" },
-  unfurnished: { ar: "غير مفروش", en: "Unfurnished" },
-};
-
-const REQ_DELIVERY_STATUS_DISPLAY: Record<string, { ar: string; en: string }> = {
-  delivered: { ar: "تم التسليم", en: "Delivered" },
-  under_construction: { ar: "تحت الإنشاء", en: "Under Construction" },
-};
-
-const REQ_OWNERSHIP_DISPLAY: Record<string, { ar: string; en: string }> = {
-  registered: { ar: "مسجل (شهر عقاري)", en: "Registered" },
-  contract_only: { ar: "عقد بيع فقط", en: "Contract Only" },
-};
-
-const REQ_DELIVERY_TIMELINE_DISPLAY: Record<string, { ar: string; en: string }> = {
-  ready: { ar: "جاهز للاستلام", en: "Ready to Move" },
-  "1_year": { ar: "خلال سنة", en: "Within 1 Year" },
-  "2_years": { ar: "خلال سنتين", en: "Within 2 Years" },
-  "3_years": { ar: "خلال 3 سنوات", en: "Within 3 Years" },
-  flexible: { ar: "مرن", en: "Flexible" },
-};
-
-const REQ_BUSINESS_NEED_DISPLAY: Record<string, { ar: string; en: string }> = {
-  generate_leads: { ar: "توليد عملاء محتملين", en: "Generate Leads" },
-  sell_inventory: { ar: "بيع المخزون المتاح", en: "Sell Inventory" },
-  resale_support: { ar: "دعم إعادة البيع", en: "Resale Support" },
-  digital_marketing: { ar: "تسويق رقمي", en: "Digital Marketing" },
-  sales_representation: { ar: "تمثيل مبيعات", en: "Sales Representation" },
-  other: { ar: "أخرى", en: "Other" },
-};
-
-const REQ_PURPOSE_DISPLAY: Record<string, { ar: string; en: string }> = {
-  residential: { ar: "سكني", en: "Residential" },
-  commercial: { ar: "تجاري", en: "Commercial" },
-  administrative: { ar: "إداري", en: "Administrative" },
-  medical: { ar: "طبي", en: "Medical" },
-  coastal: { ar: "ساحلي", en: "Coastal" },
-};
-
-
-const REQ_STATUS_LABELS_SELL: Record<SellPropertySubmission["status"], string> = {
-  new: "جديد",
-  reviewing: "قيد المراجعة",
-  contacted: "تم التواصل",
-  listed: "منشور",
-  rejected: "مرفوض",
-};
-
-const REQ_STATUS_LABELS_DEV: Record<DeveloperLead["status"], string> = {
-  new: "جديد",
-  reviewing: "قيد المراجعة",
-  contacted: "تم التواصل",
-  partnered: "شريك معتمد",
-  rejected: "مرفوض",
-};
-
-const REQ_STATUS_LABELS_BUYER: Record<BuyerRequirement["status"], string> = {
-  new: "جديد",
-  matched: "تمت الموافقة والمطابقة",
-  contacted: "تم التواصل",
-  closed: "مغلق",
-};
-
-const REQ_STATUS_COLORS: Record<string, string> = {
-  new: "bg-blue-100 text-blue-700",
-  reviewing: "bg-amber-100 text-amber-700",
-  contacted: "bg-purple-100 text-purple-700",
-  listed: "bg-green-100 text-green-700",
-  partnered: "bg-green-100 text-green-700",
-  matched: "bg-green-100 text-green-700",
-  closed: "bg-gray-200 text-gray-600",
-  rejected: "bg-red-100 text-red-700",
-};
 
 const UNIT_TYPES: PropertyUnit["type"][] = ["سكني", "فندقي", "تجاري", "إداري", "طبي", "ساحلي"];
 const FINISHING_TYPES: PropertyUnit["finishing"][] = ["تشطيب كامل", "سوبر لوكس", "نصف تشطيب", "بدون تشطيب"];
@@ -330,7 +128,7 @@ function IdbImage({ src, isMain, mainLabel, onRemove }: {
   );
 }
 
-export default function UnitsManager({ isOpen, onClose }: UnitsManagerProps) {
+export default function UnitsManager({ isOpen, onClose, onOpenProjectApprovals, pendingProjectsCount }: UnitsManagerProps) {
   const { lang } = useLang();
   const L = (ar: string, en: string) => lang === "ar" ? ar : en;
   const [units, setUnits] = useState<PropertyUnit[]>([]);
@@ -347,143 +145,6 @@ export default function UnitsManager({ isOpen, onClose }: UnitsManagerProps) {
   const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | null>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
-
-  // ── Main screen tabs: Units vs. Requests (approvals) ─────────────────────
-  const [mainTab, setMainTab] = useState<"units" | "requests">("units");
-  const [reqTab, setReqTab] = useState<"sell" | "developer" | "buyer">("sell");
-  const [sellItems, setSellItems] = useState<SellPropertySubmission[]>([]);
-  const [devItems, setDevItems] = useState<DeveloperLead[]>([]);
-  const [buyerItems, setBuyerItems] = useState<BuyerRequirement[]>([]);
-  const [reqLoading, setReqLoading] = useState(false);
-  const [viewDetails, setViewDetails] = useState<
-    | { kind: "sell"; data: SellPropertySubmission }
-    | { kind: "developer"; data: DeveloperLead }
-    | { kind: "buyer"; data: BuyerRequirement }
-    | null
-  >(null);
-  // Fallback logo uploads for developer requests submitted before the logo field was mandatory
-  const [manualDevLogos, setManualDevLogos] = useState<Record<string, string>>({});
-  const [uploadingDevLogoId, setUploadingDevLogoId] = useState<string | null>(null);
-
-  const handleManualDevLogoUpload = async (devId: string, file: File) => {
-    setUploadingDevLogoId(devId);
-    const key = await storeBlob(file);
-    setManualDevLogos(prev => ({ ...prev, [devId]: "idb:" + key }));
-    setUploadingDevLogoId(null);
-  };
-
-  const refreshRequests = useCallback(async () => {
-    setReqLoading(true);
-    const [sells, devs, buyers] = await Promise.all([
-      getSellPropertySubmissions(),
-      getDeveloperLeads(),
-      getBuyerRequirements(),
-    ]);
-    setSellItems(sells);
-    setDevItems(devs);
-    setBuyerItems(buyers);
-    setReqLoading(false);
-  }, []);
-
-  useEffect(() => {
-    if (isOpen && mainTab === "requests") refreshRequests();
-  }, [isOpen, mainTab, refreshRequests]);
-
-  const pendingRequestsCount =
-    sellItems.filter(s => s.status === "new" || s.status === "reviewing").length +
-    devItems.filter(d => d.status === "new" || d.status === "reviewing").length +
-    buyerItems.filter(b => b.status === "new").length;
-
-  const handleApproveSell = async (sub: SellPropertySubmission) => {
-    if (!window.confirm(L("سيتم نشر هذا العقار على الموقع مباشرة. هل تريد المتابعة؟", "This property will be published live. Continue?"))) return;
-    const unit = mapSubmissionToUnit(sub);
-    try {
-      const raw = localStorage.getItem(UNITS_KEY);
-      const existing: PropertyUnit[] = raw ? JSON.parse(raw) : [];
-      localStorage.setItem(UNITS_KEY, JSON.stringify([unit, ...existing]));
-      window.dispatchEvent(new Event("lavida:data-updated"));
-    } catch (e) {
-      console.error("Failed to publish unit", e);
-    }
-    await updateSellPropertySubmissionStatus(sub.id, "listed");
-    refreshRequests();
-    if (mainTab === "requests") {
-      // If the units tab is viewed afterwards it will re-read from localStorage on open
-    }
-  };
-
-  const handleRejectSell = async (id: string) => {
-    await updateSellPropertySubmissionStatus(id, "rejected");
-    refreshRequests();
-  };
-
-  const handleDeleteSellReq = async (id: string) => {
-    if (!window.confirm(L("هل أنت متأكد من حذف هذا الطلب نهائيًا؟", "Delete this request permanently?"))) return;
-    await deleteSellPropertySubmission(id);
-    refreshRequests();
-  };
-
-  const handleApproveDev = async (dev: DeveloperLead) => {
-    const logoToUse = dev.companyLogo || manualDevLogos[dev.id];
-    if (!logoToUse) {
-      alert(L("لا يوجد شعار لهذا المطور. من فضلك ارفع شعار الشركة أولاً قبل الاعتماد.", "This developer has no logo. Please upload a company logo before approving."));
-      return;
-    }
-    if (!window.confirm(L("سيتم نشر بيانات هذا المطور على الموقع مباشرة. هل تريد المتابعة؟", "This developer will be published live on the site. Continue?"))) return;
-    try {
-      const raw = localStorage.getItem(DEV_PARTNERS_KEY);
-      const existing: PublishedDeveloperPartner[] = raw ? JSON.parse(raw) : [];
-      const partner: PublishedDeveloperPartner = {
-        id: dev.id,
-        companyName: dev.companyName,
-        companyLogo: logoToUse,
-        projectName: dev.projectName,
-        location: dev.location,
-        unitsAvailable: dev.unitsAvailable,
-        startingPrice: dev.startingPrice,
-        propertyTypes: dev.propertyTypes,
-        deliveryTimeline: dev.deliveryTimeline,
-        phone: dev.phone,
-        whatsapp: dev.whatsapp,
-        website: dev.website || "",
-        addedDate: new Date().toISOString(),
-      };
-      localStorage.setItem(DEV_PARTNERS_KEY, JSON.stringify([partner, ...existing.filter(p => p.id !== dev.id)]));
-      window.dispatchEvent(new Event("lavida:data-updated"));
-    } catch (e) {
-      console.error("Failed to publish developer partner", e);
-    }
-    await updateDeveloperLeadStatus(dev.id, "partnered");
-    refreshRequests();
-  };
-
-  const handleRejectDev = async (id: string) => {
-    await updateDeveloperLeadStatus(id, "rejected");
-    refreshRequests();
-  };
-
-  const handleDeleteDevReq = async (id: string) => {
-    if (!window.confirm(L("هل أنت متأكد من حذف هذا الطلب نهائيًا؟", "Delete this request permanently?"))) return;
-    await deleteDeveloperLead(id);
-    refreshRequests();
-  };
-
-  const handleApproveBuyer = async (id: string) => {
-    if (!window.confirm(L("سيتم اعتماد هذا الطلب وتمييزه كمُطابَق. هل تريد المتابعة؟", "This request will be approved and marked as matched. Continue?"))) return;
-    await updateBuyerRequirementStatus(id, "matched");
-    refreshRequests();
-  };
-
-  const handleCloseBuyer = async (id: string) => {
-    await updateBuyerRequirementStatus(id, "closed");
-    refreshRequests();
-  };
-
-  const handleDeleteBuyerReq = async (id: string) => {
-    if (!window.confirm(L("هل أنت متأكد من حذف هذا الطلب نهائيًا؟", "Delete this request permanently?"))) return;
-    await deleteBuyerRequirement(id);
-    refreshRequests();
-  };
 
   // ── Idle Auto-logout ─────────────────────────────────────
   const [idleCountdown, setIdleCountdown] = useState<number | null>(null);
@@ -504,7 +165,6 @@ export default function UnitsManager({ isOpen, onClose }: UnitsManagerProps) {
   const persist = (updated: PropertyUnit[]) => {
     setUnits(updated);
     localStorage.setItem(UNITS_KEY, JSON.stringify(updated));
-    window.dispatchEvent(new Event("lavida:data-updated"));
   };
 
   // ── Image Upload ──────────────────────────────────────────
@@ -712,40 +372,40 @@ export default function UnitsManager({ isOpen, onClose }: UnitsManagerProps) {
               <BarChart3 className="h-5 w-5" />
             </div>
             <div>
-              <h2 className="font-display text-xl font-bold">{L("إدارة الوحدات والطلبات","Units & Requests Manager")}</h2>
-              <p className="text-xs text-white/60">{L("إضافة · تعديل · اعتماد · حذف","Add · Edit · Approve · Delete")}</p>
+              <h2 className="font-display text-xl font-bold">{L("إدارة الوحدات العقارية","Property Units Manager")}</h2>
+              <p className="text-xs text-white/60">{L("إضافة · تعديل · تتبع الحالة · تصدير","Add · Edit · Track · Export")}</p>
             </div>
-            {mainTab === "units" && (
-              <button
-                onClick={handleOpenAdd}
-                className="flex items-center gap-2 bg-secondary hover:bg-secondary/90 text-white px-5 py-2.5 rounded-xl font-display font-bold transition-colors shadow-sm"
-              >
-                <Plus className="h-4 w-4" />
-                {L("إضافة وحدة","Add Unit")}
-              </button>
-            )}
+            <button
+              onClick={handleOpenAdd}
+              className="flex items-center gap-2 bg-secondary hover:bg-secondary/90 text-white px-5 py-2.5 rounded-xl font-display font-bold transition-colors shadow-sm"
+            >
+              <Plus className="h-4 w-4" />
+              {L("إضافة وحدة","Add Unit")}
+            </button>
           </div>
           {/* End: Export + Logout + Close */}
           <div className="flex items-center gap-3">
-            {mainTab === "units" && (
+            {onOpenProjectApprovals && (
               <button
-                onClick={handleExport}
-                disabled={units.length === 0}
-                className="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 disabled:opacity-40 px-3 py-1.5 rounded-lg text-sm transition-colors"
+                onClick={onOpenProjectApprovals}
+                className="relative flex items-center gap-1.5 bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg text-sm transition-colors"
               >
-                <Download className="h-4 w-4" />
-                {L("تصدير CSV","Export CSV")}
+                {L("طلبات المشاريع","Project Requests")}
+                {!!pendingProjectsCount && pendingProjectsCount > 0 && (
+                  <span className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] leading-none rounded-full h-4 w-4 flex items-center justify-center">
+                    {pendingProjectsCount}
+                  </span>
+                )}
               </button>
             )}
-            {mainTab === "requests" && (
-              <button
-                onClick={refreshRequests}
-                className="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg text-sm transition-colors"
-              >
-                <RefreshCw className={`h-4 w-4 ${reqLoading ? "animate-spin" : ""}`} />
-                {L("تحديث","Refresh")}
-              </button>
-            )}
+            <button
+              onClick={handleExport}
+              disabled={units.length === 0}
+              className="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 disabled:opacity-40 px-3 py-1.5 rounded-lg text-sm transition-colors"
+            >
+              <Download className="h-4 w-4" />
+              {L("تصدير CSV","Export CSV")}
+            </button>
             <button
               onClick={handleLogout}
               className="flex items-center gap-1.5 bg-white/10 hover:bg-red-500/80 px-3 py-1.5 rounded-lg text-sm transition-colors"
@@ -764,35 +424,6 @@ export default function UnitsManager({ isOpen, onClose }: UnitsManagerProps) {
           </div>
         </div>
 
-        {/* ====== Main Tabs: Units vs Requests ====== */}
-        <div className="flex items-center gap-2 px-6 py-3 bg-white border-b border-gray-200 shrink-0">
-          <button
-            onClick={() => setMainTab("units")}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-display font-bold transition-colors ${
-              mainTab === "units" ? "bg-primary text-white" : "bg-gray-50 text-gray-600 border border-gray-200 hover:bg-gray-100"
-            }`}
-          >
-            <Layers className="h-4 w-4" />
-            {L("الوحدات العقارية","Property Units")}
-          </button>
-          <button
-            onClick={() => setMainTab("requests")}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-display font-bold transition-colors relative ${
-              mainTab === "requests" ? "bg-primary text-white" : "bg-gray-50 text-gray-600 border border-gray-200 hover:bg-gray-100"
-            }`}
-          >
-            <ClipboardList className="h-4 w-4" />
-            {L("طلبات البيع والمطورين","Sell & Developer Requests")}
-            {pendingRequestsCount > 0 && (
-              <span className="absolute -top-1.5 -end-1.5 bg-red-500 text-white text-[10px] rounded-full h-5 w-5 flex items-center justify-center">
-                {pendingRequestsCount}
-              </span>
-            )}
-          </button>
-        </div>
-
-        {mainTab === "units" && (
-        <>
         {/* ====== Stats Bar ====== */}
         <div className="grid grid-cols-4 gap-3 px-6 py-3 bg-white border-b border-gray-200 shrink-0">
           {[
@@ -958,247 +589,6 @@ export default function UnitsManager({ isOpen, onClose }: UnitsManagerProps) {
             </div>
           )}
         </div>
-        </>
-        )}
-
-        {mainTab === "requests" && (
-          <div className="flex-1 overflow-hidden flex flex-col">
-            {/* Requests sub-tabs */}
-            <div className="flex items-center gap-2 px-6 py-3 bg-white border-b border-gray-200 shrink-0">
-              <button
-                onClick={() => setReqTab("sell")}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-sans font-semibold transition-colors ${
-                  reqTab === "sell" ? "bg-primary text-white" : "bg-gray-50 text-gray-600 border border-gray-200"
-                }`}
-              >
-                <Home className="h-4 w-4" />
-                {L("طلبات البيع","Sell Requests")} ({sellItems.filter((s) => s.status === "new" || s.status === "reviewing").length})
-              </button>
-              <button
-                onClick={() => setReqTab("developer")}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-sans font-semibold transition-colors ${
-                  reqTab === "developer" ? "bg-primary text-white" : "bg-gray-50 text-gray-600 border border-gray-200"
-                }`}
-              >
-                <Building2 className="h-4 w-4" />
-                {L("طلبات المطورين","Developer Requests")} ({devItems.filter((d) => d.status === "new" || d.status === "reviewing").length})
-              </button>
-              <button
-                onClick={() => setReqTab("buyer")}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-sans font-semibold transition-colors ${
-                  reqTab === "buyer" ? "bg-primary text-white" : "bg-gray-50 text-gray-600 border border-gray-200"
-                }`}
-              >
-                <ClipboardList className="h-4 w-4" />
-                {L("طلبات الشراء","Buyer Requests")} ({buyerItems.filter((b) => b.status === "new").length})
-              </button>
-            </div>
-
-            <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
-              {reqTab === "sell" && (
-                sellItems.length === 0 ? (
-                  <p className="text-center text-gray-400 py-16">{L("لا توجد طلبات بيع حتى الآن","No sell requests yet")}</p>
-                ) : (
-                  sellItems.map((sub) => (
-                    <div key={sub.id} className="bg-white border border-gray-200 rounded-xl p-4 space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full ${REQ_STATUS_COLORS[sub.status]}`}>
-                          {REQ_STATUS_LABELS_SELL[sub.status]}
-                        </span>
-                        <span className="text-xs text-gray-400">{new Date(sub.date).toLocaleDateString(lang === "ar" ? "ar-EG" : "en-US")}</span>
-                      </div>
-                      <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
-                        <div><b>{L("الاسم","Name")}:</b> {sub.fullName}</div>
-                        <div className="flex items-center gap-1"><Phone className="h-3.5 w-3.5" /> {sub.phone}</div>
-                        <div><b>{L("المحافظة","Governorate")}:</b> {sub.governorate}</div>
-                        <div><b>{L("الكمبوند","Compound")}:</b> {sub.compound}</div>
-                        <div><b>{L("السعر المطلوب","Asking Price")}:</b> {sub.askingPrice} {L("ج.م","EGP")}</div>
-                        <div><b>{L("المساحة","Area")}:</b> {sub.area} {L("م²","m²")}</div>
-                      </div>
-                      {sub.images.length > 0 && (
-                        <div className="flex gap-2 flex-wrap">
-                          {sub.images.map((img) => <IdbThumb key={img} src={img} />)}
-                        </div>
-                      )}
-                      <div className="flex gap-2 pt-2 border-t border-gray-100">
-                        <button
-                          onClick={() => setViewDetails({ kind: "sell", data: sub })}
-                          className="flex items-center gap-1.5 bg-primary/10 hover:bg-primary/20 text-primary text-xs font-bold px-3 py-2 rounded-lg transition-colors"
-                        >
-                          {L("عرض كل التفاصيل","View Full Details")}
-                        </button>
-                        {(sub.status === "new" || sub.status === "reviewing") && (
-                          <>
-                            <button
-                              onClick={() => handleApproveSell(sub)}
-                              className="flex items-center gap-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold px-3 py-2 rounded-lg transition-colors"
-                            >
-                              <CheckCircle2 className="h-3.5 w-3.5" /> {L("اعتماد ونشر","Approve & Publish")}
-                            </button>
-                            <button
-                              onClick={() => handleRejectSell(sub.id)}
-                              className="flex items-center gap-1.5 bg-red-50 hover:bg-red-100 text-red-600 text-xs font-bold px-3 py-2 rounded-lg transition-colors"
-                            >
-                              <XCircle className="h-3.5 w-3.5" /> {L("رفض","Reject")}
-                            </button>
-                          </>
-                        )}
-                        <button
-                          onClick={() => handleDeleteSellReq(sub.id)}
-                          className="flex items-center gap-1.5 text-gray-400 hover:text-red-600 text-xs font-bold px-3 py-2 rounded-lg transition-colors ms-auto"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" /> {L("حذف","Delete")}
-                        </button>
-                      </div>
-                    </div>
-                  ))
-                )
-              )}
-
-              {reqTab === "developer" && (
-                devItems.length === 0 ? (
-                  <p className="text-center text-gray-400 py-16">{L("لا توجد طلبات مطورين حتى الآن","No developer requests yet")}</p>
-                ) : (
-                  devItems.map((dev) => (
-                    <div key={dev.id} className="bg-white border border-gray-200 rounded-xl p-4 space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full ${REQ_STATUS_COLORS[dev.status]}`}>
-                          {REQ_STATUS_LABELS_DEV[dev.status]}
-                        </span>
-                        <span className="text-xs text-gray-400">{new Date(dev.date).toLocaleDateString(lang === "ar" ? "ar-EG" : "en-US")}</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        {(dev.companyLogo || manualDevLogos[dev.id]) && <IdbThumb src={dev.companyLogo || manualDevLogos[dev.id]} />}
-                        <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm flex-1">
-                          <div><b>{L("الشركة","Company")}:</b> {dev.companyName}</div>
-                          <div><b>{L("المسؤول","Contact")}:</b> {dev.contactPerson}</div>
-                          <div className="flex items-center gap-1"><Phone className="h-3.5 w-3.5" /> {dev.phone}</div>
-                          <div><b>{L("المشروع","Project")}:</b> {dev.projectName}</div>
-                          <div><b>{L("الموقع","Location")}:</b> {dev.location}</div>
-                          <div><b>{L("عدد الوحدات","Units Available")}:</b> {dev.unitsAvailable}</div>
-                        </div>
-                      </div>
-                      {!dev.companyLogo && !manualDevLogos[dev.id] && (
-                        <div className="flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
-                          <span className="text-xs text-amber-700 font-semibold">
-                            {L("⚠️ هذا الطلب بدون شعار — ارفع شعار الشركة قبل الاعتماد","⚠️ No logo on this request — upload one before approving")}
-                          </span>
-                          <label className="ms-auto flex items-center gap-1.5 cursor-pointer text-xs bg-white border border-amber-300 text-amber-700 px-2.5 py-1.5 rounded-lg hover:bg-amber-100 transition-colors">
-                            {uploadingDevLogoId === dev.id ? L("جاري الرفع...","Uploading...") : L("رفع شعار","Upload Logo")}
-                            <input
-                              type="file"
-                              accept="image/*"
-                              className="hidden"
-                              disabled={uploadingDevLogoId === dev.id}
-                              onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (file) handleManualDevLogoUpload(dev.id, file);
-                                e.target.value = "";
-                              }}
-                            />
-                          </label>
-                        </div>
-                      )}
-                      <div className="flex gap-2 pt-2 border-t border-gray-100">
-                        <button
-                          onClick={() => setViewDetails({ kind: "developer", data: dev })}
-                          className="flex items-center gap-1.5 bg-primary/10 hover:bg-primary/20 text-primary text-xs font-bold px-3 py-2 rounded-lg transition-colors"
-                        >
-                          {L("عرض كل التفاصيل","View Full Details")}
-                        </button>
-                        {(dev.status === "new" || dev.status === "reviewing") && (
-                          <>
-                            <button
-                              onClick={() => handleApproveDev(dev)}
-                              className="flex items-center gap-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold px-3 py-2 rounded-lg transition-colors"
-                            >
-                              <CheckCircle2 className="h-3.5 w-3.5" /> {L("اعتماد كشريك","Approve as Partner")}
-                            </button>
-                            <button
-                              onClick={() => handleRejectDev(dev.id)}
-                              className="flex items-center gap-1.5 bg-red-50 hover:bg-red-100 text-red-600 text-xs font-bold px-3 py-2 rounded-lg transition-colors"
-                            >
-                              <XCircle className="h-3.5 w-3.5" /> {L("رفض","Reject")}
-                            </button>
-                          </>
-                        )}
-                        {dev.status === "partnered" && manualDevLogos[dev.id] && (
-                          <button
-                            onClick={() => handleApproveDev(dev)}
-                            className="flex items-center gap-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold px-3 py-2 rounded-lg transition-colors"
-                          >
-                            <CheckCircle2 className="h-3.5 w-3.5" /> {L("تحديث الشعار في الموقع","Update Logo on Site")}
-                          </button>
-                        )}
-                        <button
-                          onClick={() => handleDeleteDevReq(dev.id)}
-                          className="flex items-center gap-1.5 text-gray-400 hover:text-red-600 text-xs font-bold px-3 py-2 rounded-lg transition-colors ms-auto"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" /> {L("حذف","Delete")}
-                        </button>
-                      </div>
-                    </div>
-                  ))
-                )
-              )}
-
-              {reqTab === "buyer" && (
-                buyerItems.length === 0 ? (
-                  <p className="text-center text-gray-400 py-16">{L("لا توجد طلبات شراء حتى الآن","No buyer requests yet")}</p>
-                ) : (
-                  buyerItems.map((req) => (
-                    <div key={req.id} className="bg-white border border-gray-200 rounded-xl p-4 space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full ${REQ_STATUS_COLORS[req.status]}`}>
-                          {REQ_STATUS_LABELS_BUYER[req.status]}
-                        </span>
-                        <span className="text-xs text-gray-400">{new Date(req.date).toLocaleDateString(lang === "ar" ? "ar-EG" : "en-US")}</span>
-                      </div>
-                      <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
-                        <div><b>{L("الاسم","Name")}:</b> {req.fullName}</div>
-                        <div className="flex items-center gap-1"><Phone className="h-3.5 w-3.5" /> {req.phone}</div>
-                        <div><b>{L("الغرض","Purpose")}:</b> {REQ_PURPOSE_DISPLAY[req.purpose]?.[lang] ?? req.purpose}</div>
-                        <div><b>{L("نوع العقار","Property Type")}:</b> {REQ_PROPERTY_TYPE_DISPLAY[req.propertyType]?.[lang] ?? req.propertyType}</div>
-                        <div><b>{L("الميزانية","Budget")}:</b> {req.budgetMin} - {req.budgetMax} {L("ج.م","EGP")}</div>
-                        <div><b>{L("المواقع المطلوبة","Locations")}:</b> {req.locations.join("، ")}</div>
-                      </div>
-                      <div className="flex gap-2 pt-2 border-t border-gray-100">
-                        <button
-                          onClick={() => setViewDetails({ kind: "buyer", data: req })}
-                          className="flex items-center gap-1.5 bg-primary/10 hover:bg-primary/20 text-primary text-xs font-bold px-3 py-2 rounded-lg transition-colors"
-                        >
-                          {L("عرض كل التفاصيل","View Full Details")}
-                        </button>
-                        {req.status === "new" && (
-                          <button
-                            onClick={() => handleApproveBuyer(req.id)}
-                            className="flex items-center gap-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold px-3 py-2 rounded-lg transition-colors"
-                          >
-                            <CheckCircle2 className="h-3.5 w-3.5" /> {L("اعتماد الطلب","Approve Request")}
-                          </button>
-                        )}
-                        {(req.status === "new" || req.status === "matched" || req.status === "contacted") && (
-                          <button
-                            onClick={() => handleCloseBuyer(req.id)}
-                            className="flex items-center gap-1.5 bg-gray-100 hover:bg-gray-200 text-gray-600 text-xs font-bold px-3 py-2 rounded-lg transition-colors"
-                          >
-                            <XCircle className="h-3.5 w-3.5" /> {L("إغلاق الطلب","Close Request")}
-                          </button>
-                        )}
-                        <button
-                          onClick={() => handleDeleteBuyerReq(req.id)}
-                          className="flex items-center gap-1.5 text-gray-400 hover:text-red-600 text-xs font-bold px-3 py-2 rounded-lg transition-colors ms-auto"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" /> {L("حذف","Delete")}
-                        </button>
-                      </div>
-                    </div>
-                  ))
-                )
-              )}
-            </div>
-          </div>
-        )}
 
         {/* ── Idle countdown warning ── */}
         {idleCountdown !== null && (
@@ -1573,149 +963,6 @@ export default function UnitsManager({ isOpen, onClose }: UnitsManagerProps) {
                 </div>
 
               </form>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* ====== Request Full Details Modal ====== */}
-      <AnimatePresence>
-        {viewDetails && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 z-[80] flex items-center justify-center p-4"
-            onClick={() => setViewDetails(null)}
-          >
-            <motion.div
-              initial={{ scale: 0.92, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.92, opacity: 0 }}
-              className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto font-sans"
-              dir={lang === "ar" ? "rtl" : "ltr"}
-              onClick={e => e.stopPropagation()}
-            >
-              <div className="bg-primary text-white p-5 rounded-t-2xl flex justify-between items-center sticky top-0 z-10">
-                <h3 className="font-display text-lg font-bold">
-                  {viewDetails.kind === "sell"
-                    ? L("تفاصيل طلب البيع","Sell Request Details")
-                    : viewDetails.kind === "developer"
-                    ? L("تفاصيل طلب المطور","Developer Request Details")
-                    : L("تفاصيل طلب الشراء","Buyer Request Details")}
-                </h3>
-                <button onClick={() => setViewDetails(null)} className="text-white/70 hover:text-white p-1 rounded-lg">
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
-
-              <div className="p-6 space-y-4 text-sm">
-                {viewDetails.kind === "sell" ? (
-                  <>
-                    <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-                      <div><b>{L("الاسم","Name")}:</b> {viewDetails.data.fullName}</div>
-                      <div><b>{L("الهاتف","Phone")}:</b> {viewDetails.data.phone}</div>
-                      <div><b>{L("المحافظة","Governorate")}:</b> {viewDetails.data.governorate}</div>
-                      {viewDetails.data.district && <div><b>{L("الحي","District")}:</b> {viewDetails.data.district}</div>}
-                      <div><b>{L("الكمبوند","Compound")}:</b> {viewDetails.data.compound}</div>
-                      {viewDetails.data.address && <div><b>{L("العنوان","Address")}:</b> {viewDetails.data.address}</div>}
-                      <div><b>{L("نوع العقار","Property Type")}:</b> {REQ_PROPERTY_TYPE_DISPLAY[viewDetails.data.propertyType]?.[lang] ?? viewDetails.data.propertyType}</div>
-                      <div><b>{L("المساحة","Area")}:</b> {viewDetails.data.area} {L("م²","m²")}</div>
-                      {viewDetails.data.bedrooms && <div><b>{L("غرف النوم","Bedrooms")}:</b> {viewDetails.data.bedrooms}</div>}
-                      {viewDetails.data.bathrooms && <div><b>{L("الحمامات","Bathrooms")}:</b> {viewDetails.data.bathrooms}</div>}
-                      {viewDetails.data.floor && <div><b>{L("الدور","Floor")}:</b> {viewDetails.data.floor}</div>}
-                      {viewDetails.data.finishing && <div><b>{L("التشطيب","Finishing")}:</b> {REQ_FINISHING_DISPLAY[viewDetails.data.finishing]?.[lang] ?? viewDetails.data.finishing}</div>}
-                      {viewDetails.data.furnished && <div><b>{L("الفرش","Furnished")}:</b> {REQ_FURNISHED_DISPLAY[viewDetails.data.furnished]?.[lang] ?? viewDetails.data.furnished}</div>}
-                      <div><b>{L("السعر المطلوب","Asking Price")}:</b> {viewDetails.data.askingPrice} {L("ج.م","EGP")}</div>
-                      {viewDetails.data.amountPaid && <div><b>{L("المبلغ المدفوع","Amount Paid")}:</b> {viewDetails.data.amountPaid}</div>}
-                      {viewDetails.data.remainingInstallments && <div><b>{L("الأقساط المتبقية","Remaining Installments")}:</b> {viewDetails.data.remainingInstallments}</div>}
-                      <div><b>{L("حالة التسليم","Delivery Status")}:</b> {REQ_DELIVERY_STATUS_DISPLAY[viewDetails.data.deliveryStatus]?.[lang] ?? viewDetails.data.deliveryStatus}</div>
-                      <div><b>{L("حالة الملكية","Ownership Status")}:</b> {REQ_OWNERSHIP_DISPLAY[viewDetails.data.ownershipStatus]?.[lang] ?? viewDetails.data.ownershipStatus}</div>
-                    </div>
-                    {viewDetails.data.description && (
-                      <div>
-                        <b>{L("الوصف","Description")}:</b>
-                        <p className="text-gray-600 mt-1">{viewDetails.data.description}</p>
-                      </div>
-                    )}
-                    {viewDetails.data.images.length > 0 && (
-                      <div>
-                        <b>{L("الصور والفيديوهات","Photos & Videos")}:</b>
-                        <div className="flex gap-2 flex-wrap mt-2">
-                          {viewDetails.data.images.map(img => <IdbThumb key={img} src={img} />)}
-                        </div>
-                      </div>
-                    )}
-                  </>
-                ) : viewDetails.kind === "developer" ? (
-                  <>
-                    {(viewDetails.data.companyLogo || manualDevLogos[viewDetails.data.id]) && (
-                      <div className="flex justify-center">
-                        <IdbThumb src={viewDetails.data.companyLogo || manualDevLogos[viewDetails.data.id]} />
-                      </div>
-                    )}
-                    <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-                      <div><b>{L("اسم الشركة","Company Name")}:</b> {viewDetails.data.companyName}</div>
-                      <div><b>{L("الشخص المسؤول","Contact Person")}:</b> {viewDetails.data.contactPerson}</div>
-                      <div><b>{L("المسمى الوظيفي","Job Title")}:</b> {viewDetails.data.jobTitle}</div>
-                      <div><b>{L("الهاتف","Phone")}:</b> {viewDetails.data.phone}</div>
-                      <div><b>{L("واتساب","WhatsApp")}:</b> {viewDetails.data.whatsapp}</div>
-                      <div><b>{L("البريد الإلكتروني","Email")}:</b> {viewDetails.data.email}</div>
-                      {viewDetails.data.website && <div><b>{L("الموقع الإلكتروني","Website")}:</b> {viewDetails.data.website}</div>}
-                      <div><b>{L("اسم المشروع","Project Name")}:</b> {viewDetails.data.projectName}</div>
-                      <div><b>{L("الموقع","Location")}:</b> {viewDetails.data.location}</div>
-                      <div><b>{L("عدد الوحدات","Units Available")}:</b> {viewDetails.data.unitsAvailable}</div>
-                      <div><b>{L("السعر الابتدائي","Starting Price")}:</b> {viewDetails.data.startingPrice}</div>
-                      {viewDetails.data.paymentPlans && <div><b>{L("خطط السداد","Payment Plans")}:</b> {viewDetails.data.paymentPlans}</div>}
-                      <div><b>{L("موعد التسليم","Delivery Timeline")}:</b> {REQ_DELIVERY_TIMELINE_DISPLAY[viewDetails.data.deliveryTimeline]?.[lang] ?? viewDetails.data.deliveryTimeline}</div>
-                      {viewDetails.data.commissionInfo && <div><b>{L("العمولة","Commission")}:</b> {viewDetails.data.commissionInfo}</div>}
-                      {viewDetails.data.brochureRef && (
-                        <div className="col-span-2">
-                          <b>{L("البروشور","Brochure")}:</b>{" "}
-                          <IdbFileLink src={viewDetails.data.brochureRef} label={L("فتح البروشور","Open Brochure")} />
-                        </div>
-                      )}
-                    </div>
-                    <div>
-                      <b>{L("أنواع العقارات","Property Types")}:</b>{" "}
-                      {viewDetails.data.propertyTypes.map(pt => REQ_PROPERTY_TYPE_DISPLAY[pt]?.[lang] ?? pt).join("، ")}
-                    </div>
-                    <div>
-                      <b>{L("الاحتياجات","Business Needs")}:</b>{" "}
-                      {viewDetails.data.businessNeeds.map(bn => REQ_BUSINESS_NEED_DISPLAY[bn]?.[lang] ?? bn).join("، ")}
-                    </div>
-                    {viewDetails.data.otherNeedDetails && (
-                      <div>
-                        <b>{L("تفاصيل أخرى","Other Details")}:</b>
-                        <p className="text-gray-600 mt-1">{viewDetails.data.otherNeedDetails}</p>
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <>
-                    <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-                      <div><b>{L("الاسم","Name")}:</b> {viewDetails.data.fullName}</div>
-                      <div><b>{L("الهاتف","Phone")}:</b> {viewDetails.data.phone}</div>
-                      <div><b>{L("البريد الإلكتروني","Email")}:</b> {viewDetails.data.email}</div>
-                      <div><b>{L("طريقة التواصل","Contact Method")}:</b> {viewDetails.data.contactMethod}</div>
-                      <div><b>{L("الغرض","Purpose")}:</b> {REQ_PURPOSE_DISPLAY[viewDetails.data.purpose]?.[lang] ?? viewDetails.data.purpose}</div>
-                      <div><b>{L("نوع العقار","Property Type")}:</b> {REQ_PROPERTY_TYPE_DISPLAY[viewDetails.data.propertyType]?.[lang] ?? viewDetails.data.propertyType}</div>
-                      <div><b>{L("الميزانية","Budget")}:</b> {viewDetails.data.budgetMin} - {viewDetails.data.budgetMax} {L("ج.م","EGP")}</div>
-                      {viewDetails.data.downPayment && <div><b>{L("المقدم","Down Payment")}:</b> {viewDetails.data.downPayment}</div>}
-                      {viewDetails.data.monthlyPayment && <div><b>{L("القسط الشهري","Monthly Payment")}:</b> {viewDetails.data.monthlyPayment}</div>}
-                      <div><b>{L("موعد التسليم","Delivery Timeline")}:</b> {REQ_DELIVERY_TIMELINE_DISPLAY[viewDetails.data.delivery]?.[lang] ?? viewDetails.data.delivery}</div>
-                      {viewDetails.data.bedrooms && <div><b>{L("غرف النوم","Bedrooms")}:</b> {viewDetails.data.bedrooms}</div>}
-                      {viewDetails.data.bathrooms && <div><b>{L("الحمامات","Bathrooms")}:</b> {viewDetails.data.bathrooms}</div>}
-                      {viewDetails.data.area && <div><b>{L("المساحة","Area")}:</b> {viewDetails.data.area} {L("م²","m²")}</div>}
-                      {viewDetails.data.furnishing && <div><b>{L("الفرش","Furnishing")}:</b> {REQ_FURNISHED_DISPLAY[viewDetails.data.furnishing]?.[lang] ?? viewDetails.data.furnishing}</div>}
-                    </div>
-                    <div>
-                      <b>{L("المواقع المطلوبة","Requested Locations")}:</b>{" "}
-                      {viewDetails.data.locations.join("، ")}
-                    </div>
-                  </>
-                )}
-              </div>
             </motion.div>
           </motion.div>
         )}

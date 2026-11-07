@@ -6,7 +6,7 @@ export default function WhatsAppButton() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Array<{ text: string; isBot: boolean }>>([
     {
-      text: "مرحباً بك في لافيدا العقارية! كيف يمكن لمستشارنا الاستثماري مساعدتك اليوم؟",
+      text: "مرحباً بك في لاڤيدا بروبيرتز! كيف يمكن لمستشارنا الاستثماري مساعدتك اليوم؟",
       isBot: true
     }
   ]);

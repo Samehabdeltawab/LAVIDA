@@ -154,6 +154,20 @@ export interface Project {
   features: string[];
 }
 
+export interface DeveloperProjectSubmission {
+  id: string;
+  title: string;
+  category: 'سكني' | 'تجاري' | 'ساحلي';
+  description: string;
+  image: string;
+  location: string;
+  priceStart: string;
+  developerName: string;
+  phone: string;
+  status: 'pending' | 'approved' | 'rejected';
+  submittedDate: string;
+}
+
 export interface Service {
   id: string;
   title: string;
