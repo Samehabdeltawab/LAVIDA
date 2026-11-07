@@ -56,7 +56,7 @@ export default function FounderModal({ isOpen, onClose }: Props) {
                   <div className="absolute -bottom-3 -left-3 w-full h-full border-2 border-secondary-fixed-dim rounded-2xl -z-10" />
                   <img
                     className="w-full rounded-2xl shadow-xl aspect-[3/4] object-cover object-top"
-                    alt="نادر بريك - مؤسس لافيدا العقارية"
+                    alt="نادر بريك - مؤسس لاڤيدا بروبيرتز"
                     src={CEOImage}
                   />
                 </div>
@@ -94,7 +94,7 @@ export default function FounderModal({ isOpen, onClose }: Props) {
 
                 <div className={`pt-2 flex gap-3 ${lang === "ar" ? "flex-row-reverse" : "flex-row"}`}>
                   <a
-                    href="mailto:Lavidapropertieseg@gmail.com"
+                    href="mailto:contact@lavida-eg.com"
                     className="w-10 h-10 rounded-full bg-primary hover:bg-secondary text-white flex items-center justify-center transition-colors shadow"
                     aria-label="Email"
                   >

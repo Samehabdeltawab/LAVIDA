@@ -32,7 +32,7 @@ export default function Founder() {
                 
                 <img
                   className="w-full rounded-2xl shadow-xl aspect-[3/4] object-cover object-top hover:scale-[1.02] transition-transform duration-500"
-                  alt="نادر بريك - مؤسس لافيدا العقارية"
+                  alt="نادر بريك - مؤسس لاڤيدا بروبيرتز"
                   src={CEOImage}
                 />
               </div>
@@ -72,7 +72,7 @@ export default function Founder() {
               {/* Social Contact links */}
               <div className={`pt-4 flex gap-3.5 ${lang === "ar" ? "flex-row-reverse" : "flex-row"}`}>
                 <a
-                  href="mailto:Lavidapropertieseg@gmail.com"
+                  href="mailto:contact@lavida-eg.com"
                   className="w-11 h-11 rounded-full bg-primary hover:bg-secondary text-white flex items-center justify-center transition-colors duration-300 shadow shadow-primary/10"
                   aria-label="البريد الإلكتروني للمؤسس"
                 >

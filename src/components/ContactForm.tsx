@@ -110,8 +110,8 @@ export default function ContactForm({ onLeadSubmit }: ContactFormProps) {
                   <div className="p-2.5 rounded-lg bg-white/10 text-secondary-fixed group-hover:bg-secondary-fixed group-hover:text-primary transition-colors shrink-0">
                     <Mail className="h-5 w-5" />
                   </div>
-                  <a href="mailto:Lavidapropertieseg@gmail.com" className="text-sm font-semibold hover:text-secondary-fixed transition-colors break-all">
-                    Lavidapropertieseg@gmail.com
+                  <a href="mailto:contact@lavida-eg.com" className="text-sm font-semibold hover:text-secondary-fixed transition-colors break-all">
+                    contact@lavida-eg.com
                   </a>
                 </li>
 
@@ -153,6 +153,17 @@ export default function ContactForm({ onLeadSubmit }: ContactFormProps) {
                   aria-label="LinkedIn"
                 >
                   <Linkedin className="h-5 w-5" />
+                </a>
+                <a
+                  href="https://tiktok.com/@lavidarealestate"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2.5 rounded-lg bg-white/10 text-secondary-fixed hover:bg-secondary-fixed hover:text-primary transition-colors"
+                  aria-label="TikTok"
+                >
+                  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M19.6 6.3a4.8 4.8 0 0 1-3.8-4.3h-3.4v13.4a2.9 2.9 0 1 1-2-2.8V8.1a6.3 6.3 0 1 0 5.4 6.2V9a8.1 8.1 0 0 0 4.7 1.5V7.1a4.8 4.8 0 0 1-.9-.8z" />
+                  </svg>
                 </a>
                 <a
                   href="https://wa.me/201003306688"
