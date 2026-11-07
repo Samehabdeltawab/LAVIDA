@@ -5,6 +5,8 @@ import About from "./components/About";
 import Services from "./components/Services";
 import Projects from "./components/Projects";
 import WhyUs from "./components/WhyUs";
+import Partners from "./components/Partners";
+import DeveloperPartners from "./components/DeveloperPartners";
 import ContactForm from "./components/ContactForm";
 import LeadDashboard from "./components/LeadDashboard";
 import WhatsAppButton from "./components/WhatsAppButton";
@@ -12,11 +14,12 @@ import Footer from "./components/Footer";
 import AdminAuth from "./components/AdminAuth";
 import UnitsManager from "./components/UnitsManager";
 import UnitsPage from "./components/UnitsPage";
-import DeveloperPartners from "./components/DeveloperPartners";
 import FounderModal from "./components/FounderModal";
 import BuyerIntake from "./components/BuyerIntake";
 import SellPropertyForm from "./components/SellPropertyForm";
 import DeveloperPartnerForm from "./components/DeveloperPartnerForm";
+import SubmitProjectModal, { PROJECT_SUBMISSIONS_KEY } from "./components/SubmitProjectModal";
+import ProjectApprovalsManager from "./components/ProjectApprovalsManager";
 import { LeadSubmission } from "./types";
 
 export default function App() {
@@ -25,10 +28,24 @@ export default function App() {
   const [showAdminAuth, setShowAdminAuth] = useState(false);
   const [showFounder, setShowFounder] = useState(false);
   const [showUnitsManager, setShowUnitsManager] = useState(false);
-  const [pendingAdminAction, setPendingAdminAction] = useState<"units" | null>(null);
   const [showBuyerIntake, setShowBuyerIntake] = useState(false);
   const [showSellForm, setShowSellForm] = useState(false);
   const [showDeveloperForm, setShowDeveloperForm] = useState(false);
+  const [showSubmitProject, setShowSubmitProject] = useState(false);
+  const [showProjectApprovals, setShowProjectApprovals] = useState(false);
+  const [pendingProjectsCount, setPendingProjectsCount] = useState(0);
+
+  const refreshPendingProjectsCount = () => {
+    try {
+      const raw = localStorage.getItem(PROJECT_SUBMISSIONS_KEY);
+      const list = raw ? JSON.parse(raw) : [];
+      setPendingProjectsCount(list.filter((s: any) => s.status === "pending").length);
+    } catch { setPendingProjectsCount(0); }
+  };
+
+  useEffect(() => {
+    refreshPendingProjectsCount();
+  }, [showUnitsManager, showProjectApprovals, showSubmitProject]);
 
   // Units page navigation state
   const [unitsOpen, setUnitsOpen] = useState(false);
@@ -55,17 +72,6 @@ export default function App() {
         if (isAuth) {
           setShowUnitsManager(true);
         } else {
-          setPendingAdminAction("units");
-          setShowAdminAuth(true);
-        }
-      }
-      if (e.ctrlKey && e.shiftKey && e.key === "R") {
-        e.preventDefault();
-        const isAuth = sessionStorage.getItem("lavida_admin_auth") === "true";
-        if (isAuth) {
-          setShowUnitsManager(true);
-        } else {
-          setPendingAdminAction("units");
           setShowAdminAuth(true);
         }
       }
@@ -162,21 +168,25 @@ export default function App() {
         onOpenDeveloperForm={() => setShowDeveloperForm(true)}
       />
 
-      {/* 3. Why Lavida — value proposition */}
-      {/* Temporarily hidden - remove this comment wrapper to re-enable */}
-      {/* <WhyUs /> */}
+      {/* 3. About Corporate Section with counter metrics */}
+      <About />
 
-      {/* 3. About Corporate Section - now merged into Hero (single-page view), kept here for easy revert */}
-      {/* <About /> */}
-
-      {/* 4. Featured Properties */}
+      {/* 4. Custom Selected Properties with detail modulators */}
       <Projects onNavigate={handleNavigate} />
 
       {/* 5. Complete Services Modular Interactive Block */}
       {/* Temporarily hidden - remove this comment wrapper to re-enable */}
       {/* <Services /> */}
 
-      {/* 7b. Approved Developer Partners (public, populated after admin approval) */}
+      {/* 7. WhyUs Bento Grid Design with material-equivalent styling */}
+      {/* Temporarily hidden - remove this comment wrapper to re-enable */}
+      {/* <WhyUs /> */}
+
+      {/* 7b. Our Partners */}
+      {/* Temporarily hidden - remove this comment wrapper to re-enable */}
+      {/* <Partners /> */}
+
+      {/* 7c. Approved Developer Partners (public, populated after admin approval) */}
       <DeveloperPartners />
 
       {/* 8. Conversion lead generation module */}
@@ -189,10 +199,11 @@ export default function App() {
       <Footer
         onScrollTo={handleScrollTo}
         onOpenFounder={() => setShowFounder(true)}
+        onOpenSubmitProject={() => setShowSubmitProject(true)}
         onOpenAdmin={() => {
           const isAuth = sessionStorage.getItem("lavida_admin_auth") === "true";
           if (isAuth) { setShowUnitsManager(true); }
-          else { setPendingAdminAction("units"); setShowAdminAuth(true); }
+          else { setShowAdminAuth(true); }
         }}
       />
 
@@ -210,17 +221,15 @@ export default function App() {
       <AdminAuth
         isOpen={showAdminAuth}
         onClose={() => setShowAdminAuth(false)}
-        onSuccess={() => {
-          setShowAdminAuth(false);
-          setShowUnitsManager(true);
-          setPendingAdminAction(null);
-        }}
+        onSuccess={() => { setShowAdminAuth(false); setShowUnitsManager(true); }}
       />
 
       {/* 13. Units Manager Panel */}
       <UnitsManager
         isOpen={showUnitsManager}
         onClose={() => setShowUnitsManager(false)}
+        onOpenProjectApprovals={() => setShowProjectApprovals(true)}
+        pendingProjectsCount={pendingProjectsCount}
       />
 
       {/* 14. Founder Modal */}
@@ -245,6 +254,18 @@ export default function App() {
       <DeveloperPartnerForm
         isOpen={showDeveloperForm}
         onClose={() => setShowDeveloperForm(false)}
+      />
+
+      {/* 18. Developer Project Submission Modal (public) */}
+      <SubmitProjectModal
+        isOpen={showSubmitProject}
+        onClose={() => setShowSubmitProject(false)}
+      />
+
+      {/* 19. Admin: Project Approvals Panel */}
+      <ProjectApprovalsManager
+        isOpen={showProjectApprovals}
+        onClose={() => setShowProjectApprovals(false)}
       />
 
     </div>
