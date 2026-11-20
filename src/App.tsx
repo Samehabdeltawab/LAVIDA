@@ -20,6 +20,9 @@ import SellPropertyForm from "./components/SellPropertyForm";
 import DeveloperPartnerForm from "./components/DeveloperPartnerForm";
 import SubmitProjectModal, { PROJECT_SUBMISSIONS_KEY } from "./components/SubmitProjectModal";
 import ProjectApprovalsManager from "./components/ProjectApprovalsManager";
+import ApprovalsManager from "./components/ApprovalsManager";
+import PrivacyPolicyModal from "./components/PrivacyPolicyModal";
+import TermsModal from "./components/TermsModal";
 import { LeadSubmission } from "./types";
 
 export default function App() {
@@ -27,12 +30,15 @@ export default function App() {
   const [showAdminPortal, setShowAdminPortal] = useState(false);
   const [showAdminAuth, setShowAdminAuth] = useState(false);
   const [showFounder, setShowFounder] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
   const [showUnitsManager, setShowUnitsManager] = useState(false);
   const [showBuyerIntake, setShowBuyerIntake] = useState(false);
   const [showSellForm, setShowSellForm] = useState(false);
   const [showDeveloperForm, setShowDeveloperForm] = useState(false);
   const [showSubmitProject, setShowSubmitProject] = useState(false);
   const [showProjectApprovals, setShowProjectApprovals] = useState(false);
+  const [showLeadApprovals, setShowLeadApprovals] = useState(false);
   const [pendingProjectsCount, setPendingProjectsCount] = useState(0);
 
   const refreshPendingProjectsCount = () => {
@@ -199,6 +205,8 @@ export default function App() {
       <Footer
         onScrollTo={handleScrollTo}
         onOpenFounder={() => setShowFounder(true)}
+        onOpenPrivacy={() => setShowPrivacy(true)}
+        onOpenTerms={() => setShowTerms(true)}
         onOpenSubmitProject={() => setShowSubmitProject(true)}
         onOpenAdmin={() => {
           const isAuth = sessionStorage.getItem("lavida_admin_auth") === "true";
@@ -229,13 +237,29 @@ export default function App() {
         isOpen={showUnitsManager}
         onClose={() => setShowUnitsManager(false)}
         onOpenProjectApprovals={() => setShowProjectApprovals(true)}
+        onOpenLeadApprovals={() => setShowLeadApprovals(true)}
         pendingProjectsCount={pendingProjectsCount}
+      />
+
+      <ApprovalsManager
+        isOpen={showLeadApprovals}
+        onClose={() => setShowLeadApprovals(false)}
       />
 
       {/* 14. Founder Modal */}
       <FounderModal
         isOpen={showFounder}
         onClose={() => setShowFounder(false)}
+      />
+
+      <PrivacyPolicyModal
+        isOpen={showPrivacy}
+        onClose={() => setShowPrivacy(false)}
+      />
+
+      <TermsModal
+        isOpen={showTerms}
+        onClose={() => setShowTerms(false)}
       />
 
       {/* 15. Buyer Property Matching Intake */}
