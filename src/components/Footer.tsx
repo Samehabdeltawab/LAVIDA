@@ -7,9 +7,11 @@ interface FooterProps {
   onOpenAdmin: () => void;
   onOpenFounder: () => void;
   onOpenSubmitProject?: () => void;
+  onOpenPrivacy?: () => void;
+  onOpenTerms?: () => void;
 }
 
-export default function Footer({ onScrollTo, onOpenAdmin, onOpenFounder, onOpenSubmitProject }: FooterProps) {
+export default function Footer({ onScrollTo, onOpenAdmin, onOpenFounder, onOpenSubmitProject, onOpenPrivacy, onOpenTerms }: FooterProps) {
   const { lang } = useLang();
   return (
     <footer className="bg-primary text-white py-12 border-t border-white/5 relative">
@@ -27,10 +29,18 @@ export default function Footer({ onScrollTo, onOpenAdmin, onOpenFounder, onOpenS
 
         {/* Center: Legal RTL anchor links + Admin */}
         <div className={`flex flex-col ${lang === "ar" ? "sm:flex-row-reverse" : "sm:flex-row"} items-center gap-6 sm:gap-8 text-on-primary-container font-sans text-xs`}>
-          <a href="#privacy" className="hover:text-secondary-fixed transition-colors">
+          <a
+            href="#privacy"
+            onClick={(e) => { e.preventDefault(); onOpenPrivacy?.(); }}
+            className="hover:text-secondary-fixed transition-colors"
+          >
             {t(lang, "footer_privacy")}
           </a>
-          <a href="#terms" className="hover:text-secondary-fixed transition-colors">
+          <a
+            href="#terms"
+            onClick={(e) => { e.preventDefault(); onOpenTerms?.(); }}
+            className="hover:text-secondary-fixed transition-colors"
+          >
             {t(lang, "footer_terms")}
           </a>
           <a href="#sitemap" className="hover:text-secondary-fixed transition-colors">

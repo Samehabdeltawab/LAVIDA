@@ -13,6 +13,7 @@ interface UnitsManagerProps {
   isOpen: boolean;
   onClose: () => void;
   onOpenProjectApprovals?: () => void;
+  onOpenLeadApprovals?: () => void;
   pendingProjectsCount?: number;
 }
 
@@ -128,7 +129,7 @@ function IdbImage({ src, isMain, mainLabel, onRemove }: {
   );
 }
 
-export default function UnitsManager({ isOpen, onClose, onOpenProjectApprovals, pendingProjectsCount }: UnitsManagerProps) {
+export default function UnitsManager({ isOpen, onClose, onOpenProjectApprovals, onOpenLeadApprovals, pendingProjectsCount }: UnitsManagerProps) {
   const { lang } = useLang();
   const L = (ar: string, en: string) => lang === "ar" ? ar : en;
   const [units, setUnits] = useState<PropertyUnit[]>([]);
@@ -396,6 +397,14 @@ export default function UnitsManager({ isOpen, onClose, onOpenProjectApprovals, 
                     {pendingProjectsCount}
                   </span>
                 )}
+              </button>
+            )}
+            {onOpenLeadApprovals && (
+              <button
+                onClick={onOpenLeadApprovals}
+                className="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg text-sm transition-colors"
+              >
+                {L("طلبات البيع والمطورين","Sell & Developer Requests")}
               </button>
             )}
             <button
