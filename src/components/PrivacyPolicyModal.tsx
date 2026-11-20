@@ -43,41 +43,41 @@ export default function PrivacyPolicyModal({ isOpen, onClose }: Props) {
               </p>
 
               <p>
-                توضح هذه السياسة البيانات اللي بنجمعها لما تسيب بياناتك في نماذج الإعلانات على فيسبوك وإنستجرام أو تتواصل معانا بخصوص مشروع عقاري، وإزاي بنستخدمها.
+                توضح هذه السياسة البيانات التي نجمعها عند تركك بياناتك في نماذج الإعلانات على فيسبوك وإنستجرام، أو عند تواصلك معنا بخصوص مشروع عقاري، وكيفية استخدامنا لها.
               </p>
 
               <section className="space-y-2">
-                <h3 className="font-display text-lg font-bold text-primary">البيانات اللي بنجمعها</h3>
+                <h3 className="font-display text-lg font-bold text-primary">البيانات التي نجمعها</h3>
                 <ul className="list-disc pr-6 space-y-1">
                   <li>الاسم.</li>
-                  <li>رقم التليفون.</li>
+                  <li>رقم الهاتف.</li>
                   <li>
-                    تفاصيل استفسارك العقاري وإجاباتك على أسئلة النموذج، زي المشروع ونوع الوحدة اللي بتسأل عنها، والغرض من الشراء، والتوقيت، وطريقة الدفع المفضلة.
+                    تفاصيل استفسارك العقاري وإجاباتك على أسئلة النموذج، مثل المشروع ونوع الوحدة التي تستفسر عنها، والغرض من الشراء، والتوقيت، وطريقة الدفع المفضلة.
                   </li>
                 </ul>
               </section>
 
               <section className="space-y-2">
-                <h3 className="font-display text-lg font-bold text-primary">إزاي بنستخدم البيانات</h3>
+                <h3 className="font-display text-lg font-bold text-primary">كيف نستخدم البيانات</h3>
                 <ul className="list-disc pr-6 space-y-1">
-                  <li>بيستقبل المسؤول عندنا الطلبات ويوزعها على فريق المبيعات.</li>
+                  <li>يستقبل المسؤول لدينا الطلبات ويوزعها على فريق المبيعات.</li>
                   <li>
-                    فريق المبيعات بيتواصل معاك بخصوص الوحدات المتاحة والأسعار وأنظمة السداد للمشروع اللي سألت عنه، ومتابعة استفسارك.
+                    يتواصل معك فريق المبيعات بخصوص الوحدات المتاحة والأسعار وأنظمة السداد للمشروع الذي استفسرت عنه، ومتابعة استفسارك.
                   </li>
                 </ul>
               </section>
 
               <section className="space-y-2">
-                <h3 className="font-display text-lg font-bold text-primary">مين يقدر يوصل للبيانات</h3>
+                <h3 className="font-display text-lg font-bold text-primary">من يمكنه الاطلاع على البيانات</h3>
                 <p>
-                  الوصول للبيانات مقصور على الموظفين المصرح لهم، ومقدمي الخدمات اللازمين لاستقبال الطلبات والتواصل معاك (زي منصة Meta اللي بيتم من خلالها ملء نماذج الإعلانات).
+                  الاطلاع على البيانات مقصور على الموظفين المصرح لهم، ومقدمي الخدمات اللازمين لاستقبال الطلبات والتواصل معك (مثل منصة Meta التي تُملأ من خلالها نماذج الإعلانات).
                 </p>
               </section>
 
               <section className="space-y-2">
-                <h3 className="font-display text-lg font-bold text-primary">التواصل معانا</h3>
+                <h3 className="font-display text-lg font-bold text-primary">التواصل معنا</h3>
                 <p>
-                  لأي استفسار عن بياناتك أو عن السياسة دي، تواصل معانا على:{" "}
+                  لأي استفسار عن بياناتك أو عن هذه السياسة، تواصل معنا على:{" "}
                   <a
                     href="mailto:contact@lavida-eg.com"
                     className="text-secondary font-semibold hover:underline"
