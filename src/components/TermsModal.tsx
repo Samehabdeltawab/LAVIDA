@@ -38,7 +38,6 @@ const SECTIONS_AR: { title: string; items: string[] }[] = [
     title: "العمولات والمدفوعات",
     items: [
       "خدمتنا للمشتري مجانية، ولا نتقاضى منه أي رسوم عند شراء وحدة من مشروع مطور.",
-      "نحصل على عمولتنا من المطور.",
       "في حالة إعادة البيع (ريسيل) فقط، قد تُحصَّل عمولة من العميل، ويتم الاتفاق عليها بوضوح قبل أي إجراء.",
       "لا تدفع أي مبالغ لأي شخص يدّعي أنه يمثلنا إلا بإيصال رسمي وبعد التأكد من الاتفاق مع الشركة.",
     ],
@@ -114,7 +113,6 @@ const SECTIONS_EN: { title: string; items: string[] }[] = [
     title: "Commissions and Payments",
     items: [
       "Our service is free for buyers; we do not charge buyers any fees when purchasing a unit in a developer's project.",
-      "We receive our commission from the developer.",
       "In resale cases only, a commission may be charged to the client, and it is clearly agreed upon before any action is taken.",
       "Do not pay any amount to anyone claiming to represent us unless against an official receipt and after confirming the arrangement with the company.",
     ],
