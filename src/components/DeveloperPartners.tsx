@@ -51,6 +51,21 @@ const STATIC_PARTNERS: PublishedDeveloperPartner[] = [
     website: "https://elm-developments.com/",
     addedDate: new Date().toISOString(),
   },
+  {
+    id: "static-oria",
+    companyName: "Oria",
+    companyLogo: "https://oriadevelopments.com/wp-content/uploads/2024/11/oria-000.svg",
+    projectName: "",
+    location: "",
+    unitsAvailable: "",
+    startingPrice: "",
+    propertyTypes: [],
+    deliveryTimeline: "",
+    phone: "",
+    whatsapp: "",
+    website: "https://oriadevelopments.com/",
+    addedDate: new Date().toISOString(),
+  },
 ];
 
 function PartnerLogo({ src, name }: { src: string; name: string }) {

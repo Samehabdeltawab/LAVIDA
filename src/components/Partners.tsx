@@ -23,6 +23,11 @@ const PARTNERS: Partner[] = [
     logo: "https://elm-developments.com/wp-content/uploads/2023/logo.png",
     url: "https://elm-developments.com/elm-%D9%84%D9%84%D8%AA%D8%B7%D9%88%D9%8A%D8%B1-%D8%A7%D9%84%D8%B9%D9%82%D8%A7%D8%B1%D9%8A-%D8%AA%D9%86%D8%B7%D9%84%D9%82-%D8%B1%D8%B3%D9%85%D9%8A%D9%8B%D8%A7-%D9%81%D9%8A-%D8%A7%D9%84%D8%B3/",
   },
+  {
+    name: "Oria Developments",
+    logo: "https://oriadevelopments.com/wp-content/uploads/2024/11/oria-000.svg",
+    url: "https://oriadevelopments.com/",
+  },
 ];
 
 export default function Partners() {
@@ -43,7 +48,7 @@ export default function Partners() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {PARTNERS.map((partner, index) => (
             <motion.a
               key={partner.name}
